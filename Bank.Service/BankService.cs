@@ -184,7 +184,20 @@ namespace BankApp.Service
             ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = new[] { "TransactionID", "SendersAccountID", "RecieversAccountID", "Type", "Amount", "Time" }, EnableCount = false });
             foreach(Transaction transaction in _transactions)
             {
-                table.AddRow( transaction.TransactionID, transaction.sID, transaction.rID, transaction.Type, transaction.Amount, transaction.Time);
+                string type = "";
+                switch (transaction.Type)
+                {
+                    case (int) TransactionType.Deposit:
+                        type = "Deposit";
+                        break;
+                    case (int)TransactionType.Transfer:
+                        type = "Transfer";
+                        break;
+                    case (int)TransactionType.Withdraw:
+                        type = "Withdraw";
+                        break;
+                }
+                table.AddRow( transaction.TransactionID, transaction.sID, transaction.rID, type, transaction.Amount, transaction.Time);
             }
             return table;
         }
