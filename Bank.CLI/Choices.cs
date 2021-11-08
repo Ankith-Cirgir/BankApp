@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankApp.CLI
+namespace BankApp.CLI // add enum for type of transaction
 {
 
         public enum MainMenu
@@ -21,7 +21,6 @@ namespace BankApp.CLI
             ShowTransactions,
             Logout,
         }
-
         public enum StaffLoginMenu
         {
             CreateAccount = 1,

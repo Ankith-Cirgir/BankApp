@@ -13,7 +13,7 @@ namespace BankApp.CLI
             Console.Clear();
         }
 
-        public static string GetString(string message) //helper
+        public static string GetString(string message) 
         {
             print(message);
             return Console.ReadLine();
@@ -30,7 +30,7 @@ namespace BankApp.CLI
         }
 
 
-        public static int GetNumber(string message) //while loop
+        public static int GetNumber(string message)
         {
             while (true)
             {

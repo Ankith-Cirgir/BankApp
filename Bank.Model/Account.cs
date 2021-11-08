@@ -8,12 +8,10 @@ namespace BankApp.Model
 {
     public class Account
     {
-        public List<Transaction> transactions = new List<Transaction>();
-
-        public string bankID { get; set; }
-
+        public List<Transaction> Transactions = new List<Transaction>();
+        public string BankID { get; set; }
         public string AccountID { get; set; }
-        public float balance { get; set; }
+        public float Balance { get; set; }
         public string Name { get; set; }
         public string Passowrd { get; set; }
 
@@ -21,17 +19,17 @@ namespace BankApp.Model
         {
             this.AccountID = name.Substring(0, 3) + DateTime.Now.ToString("ddMMyyyyHHmmss");
             this.Name = name;
-            this.balance = 0;
+            this.Balance = 0;
         }
 
         public List<Transaction> GetTransactions()
         {
-            return transactions;
+            return Transactions;
         }
 
         public bool SetTransaction(Transaction t)
         {
-            transactions.Add(t);
+            Transactions.Add(t);
             return true;
         }
     }

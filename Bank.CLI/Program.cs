@@ -6,7 +6,7 @@ using ConsoleTables;
 namespace BankApp.CLI
 {
 
-    public partial class Program //PARTIAL CLASSES
+    public partial class Program    
         // GET STRING (DONE)
         // try use ? : where ever possible (DONE)
         // change variable names according to the context (DONE)
@@ -24,7 +24,7 @@ namespace BankApp.CLI
             while (!exit)
             {
                 Console.Clear();
-                try {
+                //try {
                     MainMenu mainMenu = (MainMenu)Enum.Parse(typeof(MainMenu), GetString(Messages.WelcomeMenu)); // TRY PARSE
                     switch (mainMenu)
                     {
@@ -62,7 +62,9 @@ namespace BankApp.CLI
                                     while (!e)
                                     {
                                         Console.Clear();
-                                        StaffLoginMenu StaffLoginMenu = (StaffLoginMenu)Enum.Parse(typeof(StaffLoginMenu), GetString(Messages.StaffLoginMenu));
+                                        print(Messages.StaffLoginMenu);
+                                        string ch = Console.ReadLine();
+                                        StaffLoginMenu StaffLoginMenu = (StaffLoginMenu)Enum.Parse(typeof(StaffLoginMenu), ch);
                                         switch (StaffLoginMenu)
                                         {
                                             case StaffLoginMenu.CreateAccount:
@@ -72,7 +74,7 @@ namespace BankApp.CLI
                                                 string createAccountId = bankService.CreateCustomerAccount(createAccountName, createAccountPassword);
                                                 Console.Clear();
                                                 println($"Bank account created with:\nAccount ID: {createAccountId}\nPassword:{createAccountPassword}");
-                                                Console.Read();
+                                                Console.ReadLine();
                                                 break;
 
                                             case StaffLoginMenu.UpdateAccount:
@@ -86,7 +88,7 @@ namespace BankApp.CLI
                                                         string NewName = GetString(Messages.AskName);
                                                         NewName = bankService.UpdateCustomerName(CustomerAccountID, NewName);
                                                         println($"Name has been updated to {NewName}");
-                                                        Console.Read();
+                                                        Console.ReadLine();
                                                         break;
                                                     case UpdateCustomerAccountMenu.UpdatePassword:
                                                         Console.Clear();
@@ -94,7 +96,7 @@ namespace BankApp.CLI
                                                         string NewPassword = GetString(Messages.AskPassword);
                                                         NewPassword = bankService.UpdateCustomerPassword(CustomerID, NewPassword);
                                                         print($"Password has been updated to {NewPassword}");
-                                                        Console.Read();
+                                                        Console.ReadLine();
                                                         break;
                                                     case UpdateCustomerAccountMenu.Back: //USE DEFAULT
                                                         Console.Clear();
@@ -146,7 +148,7 @@ namespace BankApp.CLI
                                                 ConsoleTable cTable = bankService.GetTransactions(id);
                                                 cTable.Write();
                                                 print("\nPress Enter to exit...");
-                                                Console.Read();
+                                                Console.ReadLine();
                                                 break;
                                             case StaffLoginMenu.RevertTransaction:
                                                 Console.Clear();
@@ -170,7 +172,7 @@ namespace BankApp.CLI
                                 else
                                 {
                                     println(Messages.InvalidCredentials);
-                                    Console.Read();
+                                    Console.ReadLine();
                                 }
                             }
                             else
@@ -197,7 +199,7 @@ namespace BankApp.CLI
                                                 int transferAmount = GetNumber(Messages.AskTransferAmount);
                                                 Console.Clear();
                                                 println(bankService.TransferAmount(loginId, ID_TO, transferAmount) ? Messages.TransactionSuccess : Messages.TransactionErrorInsufficientBal);
-                                                Console.Read();
+                                                Console.ReadLine();
                                                 break;
                                             case CustomerLoginMenu.Withdraw:
                                                 int a = GetNumber(Messages.AskWithdrawAmount);
@@ -205,7 +207,7 @@ namespace BankApp.CLI
                                                 bool check = bankService.WithdrawAmount(loginId, a);
                                                 Console.Clear();
                                                 println(check ? $"{a} has been withdrawed succesfully" : Messages.InsuffiecientFunds);
-                                                Console.Read();
+                                                Console.ReadLine();
 
                                                 break;
                                             case CustomerLoginMenu.ShowTransactions:
@@ -213,7 +215,7 @@ namespace BankApp.CLI
                                                 ConsoleTable t = bankService.GetTransactions(loginId);
                                                 t.Write();
                                                 print("\nPress Enter to exit...");
-                                                Console.Read();
+                                                Console.ReadLine();
                                                 break;
                                             case CustomerLoginMenu.Logout:
                                                 e = true;
@@ -225,7 +227,7 @@ namespace BankApp.CLI
                                 {
                                     Console.Clear();
                                     print(Messages.InvalidCredentials);
-                                    Console.Read();
+                                    Console.ReadLine();
                                 }
                             }
                             break;
@@ -233,13 +235,13 @@ namespace BankApp.CLI
                             exit = true;
                             break;
                     }
-                }
-                catch
-                {
-                    Console.Clear();
-                    println("Error Occured");
-                    Console.ReadLine();
-                }
+                //}
+                //catch
+                //{
+                //    Console.Clear();
+                //    println("Error Occured");
+                //    Console.ReadLine();
+                //}
                 
             }
         }
