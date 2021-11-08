@@ -11,8 +11,6 @@ namespace BankApp.Service
     public class BankService
     {
         private Dictionary<string, Bank> _banks = new Dictionary<string, Bank>();
-
-        string bankID;
         
         private Dictionary<string, Account> _customerAccounts = new Dictionary<string, Account>();
 
@@ -22,6 +20,7 @@ namespace BankApp.Service
 
         private Dictionary<string, float> _currency = new Dictionary<string, float>();
 
+        string bankID;
 
         public string init() {
             string bankName = "MoneyBank";
@@ -32,24 +31,24 @@ namespace BankApp.Service
         }
 
 
-        public string AddBank(string Name, int sRTGS, int sIMPS, int oRTGS, int oIMPS)
+        public string AddBank(string name, int sRTGS, int sIMPS, int oRTGS, int oIMPS)
         {
-            Bank bank = new Bank(Name, sRTGS, sIMPS, oRTGS, oIMPS);
+            Bank bank = new Bank(name, sRTGS, sIMPS, oRTGS, oIMPS);
             this._banks.Add(bank.ID, bank);
             return bank.ID;
         }
 
-        public string AddBank(string Name)
+        public string AddBank(string name)
         {
-            Bank bank = new Bank(Name);
+            Bank bank = new Bank(name);
             this._banks.Add(bank.ID, bank);
             this.bankID = bank.ID;
             return bank.ID;
         }
 
-        public string CreateCustomerAccount(string Name, string pass)
+        public string CreateCustomerAccount(string name, string pass)
         {
-            Account acc = new Account(Name);
+            Account acc = new Account(name);
             acc.Passowrd = pass;
             acc.BankID = _banks[this.bankID].ID;
             string accountID = acc.AccountID;
@@ -57,21 +56,21 @@ namespace BankApp.Service
             return accountID;
         }
 
-        public string CreateStaffAccount(string Name, string pass)
+        public string CreateStaffAccount(string name, string pass)
         {
-            StaffAccount acc = new StaffAccount("admin",Name,pass);
+            StaffAccount acc = new StaffAccount("admin",name,pass);
             acc.Passowrd = pass;
             acc.AccountID = "admin";
             _staffAccounts.Add("admin",acc);
             return "admin";
         }
 
-        public string DepositAmount(string AccountID,int Amount, string _currencyName)
+        public string DepositAmount(string accountID,int amount, string _currencyName)
         {
-            Account acc = _customerAccounts[AccountID];
-            acc.Balance = acc.Balance + Amount*(_currency[_currencyName]);
+            Account acc = _customerAccounts[accountID];
+            acc.Balance = acc.Balance + amount*(_currency[_currencyName]);
             string TID = acc.BankID + acc.AccountID + DateTime.Now.ToString("HHmmss");
-            Transaction tr = new Transaction(TID, AccountID, Amount, 2, DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+            Transaction tr = new Transaction(TID, accountID, amount, 2, DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
             this._transactions.Add(TID, tr);
             acc.SetTransaction(tr);
             return acc.Name;
@@ -94,9 +93,9 @@ namespace BankApp.Service
             return true;
         }
 
-        public bool AuthenticateCustomer(string AccountID,string pass)
+        public bool AuthenticateCustomer(string accountID,string pass)
         {
-            Account acc = _customerAccounts[AccountID];
+            Account acc = _customerAccounts[accountID];
             if (acc.Passowrd == pass) // direct return
             {
                 return true;
@@ -178,14 +177,14 @@ namespace BankApp.Service
             return true;
         }
 
-        public ConsoleTable GetTransactions(string AccountID)
+        public ConsoleTable GetTransactions(string accountID)
         {
-            Account acc = _customerAccounts[AccountID];
+            Account acc = _customerAccounts[accountID];
             List<Transaction> _transactions = acc.GetTransactions();
-            ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = new[] { "SNO","TransactionID", "SendersAccountID", "RecieversAccountID", "Type", "Amount", "Time" }, EnableCount = false });
+            ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = new[] { "TransactionID", "SendersAccountID", "RecieversAccountID", "Type", "Amount", "Time" }, EnableCount = false });
             foreach(Transaction transaction in _transactions)
             {
-                table.AddRow(transaction.SNO, transaction.TransactionID, transaction.sID, transaction.rID, transaction.Type, transaction.Amount, transaction.Time);
+                table.AddRow( transaction.TransactionID, transaction.sID, transaction.rID, transaction.Type, transaction.Amount, transaction.Time);
             }
             return table;
         }
@@ -281,8 +280,10 @@ namespace BankApp.Service
 
     public enum TransactionType
     {
-        Withdraw=1,
+        Withdraw = 1,
         Deposit,
         Transfer,
     }
+
+
 }

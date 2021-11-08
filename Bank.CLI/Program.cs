@@ -24,7 +24,7 @@ namespace BankApp.CLI
             while (!exit)
             {
                 Console.Clear();
-                //try {
+                try {
                     MainMenu mainMenu = (MainMenu)Enum.Parse(typeof(MainMenu), GetString(Messages.WelcomeMenu)); // TRY PARSE
                     switch (mainMenu)
                     {
@@ -235,13 +235,13 @@ namespace BankApp.CLI
                             exit = true;
                             break;
                     }
-                //}
-                //catch
-                //{
-                //    Console.Clear();
-                //    println("Error Occured");
-                //    Console.ReadLine();
-                //}
+                }
+                catch
+                {
+                    Console.Clear();
+                    println("Error Occured");
+                    Console.ReadLine();
+                }
                 
             }
         }
