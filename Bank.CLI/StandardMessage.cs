@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankApp.CLI
 {
-    class StandardMessage //change name MESSAGES
+    class Messages //change name MESSAGES
     {
         public static string WelcomeMenu = "Choose an option...\n1) Deposit Amount\n2) Login\n3) EXIT\n\nEnter your choice: ";
         

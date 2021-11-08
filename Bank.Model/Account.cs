@@ -17,19 +17,19 @@ namespace BankApp.Model
         public string Name { get; set; }
         public string Passowrd { get; set; }
 
-        public Account(string Name)
+        public Account(string name)
         {
-            this.AccountID = Name.Substring(0, 3) + DateTime.Now.ToString("ddMMyyyyHHmmss");
-            this.Name = Name;
+            this.AccountID = name.Substring(0, 3) + DateTime.Now.ToString("ddMMyyyyHHmmss");
+            this.Name = name;
             this.balance = 0;
         }
 
-        public List<Transaction> getTransactions()
+        public List<Transaction> GetTransactions()
         {
             return transactions;
         }
 
-        public bool setTransaction(Transaction t)
+        public bool SetTransaction(Transaction t)
         {
             transactions.Add(t);
             return true;
@@ -44,11 +44,11 @@ namespace BankApp.Model
         
         public string Passowrd { get; set; }
 
-        public StaffAccount(string AccountID, string Name, string Password)
+        public StaffAccount(string accountID, string name, string password)
         {
-            this.AccountID = AccountID;
-            this.Name = Name;
-            this.Passowrd = Passowrd;
+            this.AccountID = accountID;
+            this.Name = name;
+            this.Passowrd = password;
         }
     }
 }
