@@ -9,15 +9,15 @@ namespace BankApp.Model
     public class Account
     {
         public List<Transaction> Transactions = new List<Transaction>();
-        public string BankID { get; set; }
-        public string AccountID { get; set; }
+        public string BankId { get; set; }
+        public string AccountId { get; set; }
         public float Balance { get; set; }
         public string Name { get; set; }
         public string Passowrd { get; set; }
 
         public Account(string name)
         {
-            this.AccountID = name.Substring(0, 3) + DateTime.Now.ToString("ddMMyyyyHHmmss");
+            this.AccountId = name.Substring(0, 3) + DateTime.Now.ToString("ddMMyyyyHHmmss");
             this.Name = name;
             this.Balance = 0;
         }
@@ -36,7 +36,7 @@ namespace BankApp.Model
 
     public class StaffAccount
     {
-        public string AccountID { get; set; }
+        public string AccountId { get; set; }
 
         public string Name { get; set; }
         
@@ -44,7 +44,7 @@ namespace BankApp.Model
 
         public StaffAccount(string accountID, string name, string password)
         {
-            this.AccountID = accountID;
+            this.AccountId = accountID;
             this.Name = name;
             this.Passowrd = password;
         }

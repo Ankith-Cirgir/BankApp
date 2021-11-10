@@ -32,18 +32,19 @@ namespace BankApp.CLI
 
         public static int GetNumber(string message)
         {
+            print(message);
             while (true)
             {
                 int Number;
                 try
                 {
-                    print(message);
                     Number = Convert.ToInt32(Console.ReadLine());
                     return Number;
                 }
                 catch
                 {
-                    println("Only numbers are accepted");
+                    println("Only numbers are accepted !!");
+                    print("Enter: ");
                 }
             }
 

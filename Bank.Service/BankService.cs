@@ -9,7 +9,22 @@ using ConsoleTables;
 namespace BankApp.Service
 {
     public class BankService
+        // used string interpolation whereever possible
+        // created GetDateTimeNow funtion to reuse code
     {
+        public string GetDateTimeNow(bool forId)
+        {
+            if (forId)
+            {
+                return DateTime.Now.ToString("ddMMyyyyHHmmss");
+            }
+            else
+            {
+                return DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            }
+        }
+        
+
         private Dictionary<string, Bank> _banks = new Dictionary<string, Bank>();
         
         private Dictionary<string, Account> _customerAccounts = new Dictionary<string, Account>();
@@ -20,65 +35,64 @@ namespace BankApp.Service
 
         private Dictionary<string, float> _currency = new Dictionary<string, float>();
 
-        string bankID;
-
+        string bankId;
         public string init() {
             string bankName = "MoneyBank";
-            string bankID = this.AddBank(bankName); 
+            string bankId = this.AddBank(bankName); 
             this.CreateStaffAccount("admin", "admin");
             this._currency.Add("INR",1);
-            return bankID;
+            return bankId;
         }
 
 
         public string AddBank(string name, int sRTGS, int sIMPS, int oRTGS, int oIMPS)
         {
             Bank bank = new Bank(name, sRTGS, sIMPS, oRTGS, oIMPS);
-            this._banks.Add(bank.ID, bank);
-            return bank.ID;
+            this._banks.Add(bank.Id, bank);
+            return bank.Id;
         }
 
         public string AddBank(string name)
         {
             Bank bank = new Bank(name);
-            this._banks.Add(bank.ID, bank);
-            this.bankID = bank.ID;
-            return bank.ID;
+            this._banks.Add(bank.Id, bank);
+            this.bankId = bank.Id;
+            return bank.Id;
         }
 
         public string CreateCustomerAccount(string name, string pass)
         {
             Account acc = new Account(name);
             acc.Passowrd = pass;
-            acc.BankID = _banks[this.bankID].ID;
-            string accountID = acc.AccountID;
-            _customerAccounts.Add(accountID,acc);
-            return accountID;
+            acc.BankId = _banks[this.bankId].Id;
+            string accountId = acc.AccountId;
+            _customerAccounts.Add(accountId,acc);
+            return accountId;
         }
 
         public string CreateStaffAccount(string name, string pass)
         {
             StaffAccount acc = new StaffAccount("admin",name,pass);
             acc.Passowrd = pass;
-            acc.AccountID = "admin";
+            acc.AccountId = "admin";
             _staffAccounts.Add("admin",acc);
             return "admin";
         }
 
-        public string DepositAmount(string accountID,int amount, string _currencyName)
+        public string DepositAmount(string accountId,int amount, string _currencyName)
         {
-            Account acc = _customerAccounts[accountID];
+            Account acc = _customerAccounts[accountId];
             acc.Balance = acc.Balance + amount*(_currency[_currencyName]);
-            string TID = acc.BankID + acc.AccountID + DateTime.Now.ToString("HHmmss");
-            Transaction tr = new Transaction(TID, accountID, amount, 2, DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
-            this._transactions.Add(TID, tr);
+            string TId = $"{acc.BankId}{acc.AccountId}{GetDateTimeNow(true)}";
+            Transaction tr = new Transaction(TId, accountId, amount, 2, GetDateTimeNow(false));
+            this._transactions.Add(TId, tr);
             acc.SetTransaction(tr);
             return acc.Name;
         }
 
-        public bool WithdrawAmount(string accountID, int amount)
+        public bool WithdrawAmount(string accountId, int amount)
         {
-            Account acc = _customerAccounts[accountID];
+            Account acc = _customerAccounts[accountId];
             float bal = acc.Balance;
             if (bal < amount)
             {
@@ -86,60 +100,52 @@ namespace BankApp.Service
             }
 
             acc.Balance = bal - amount;
-            string TID = acc.BankID + acc.AccountID + DateTime.Now.ToString("HHmmss");
-            Transaction tr = new Transaction(TID, accountID, amount, 1, DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+            string TId = $"{acc.BankId}{acc.AccountId}{GetDateTimeNow(true)}";
+            Transaction tr = new Transaction(TId, accountId, amount, 1, GetDateTimeNow(false));
             acc.SetTransaction(tr);
-            this._transactions.Add(TID, tr);
+            this._transactions.Add(TId, tr);
             return true;
         }
 
-        public bool AuthenticateCustomer(string accountID,string pass)
+        public bool AuthenticateCustomer(string accountId,string pass)
         {
-            Account acc = _customerAccounts[accountID];
-            if (acc.Passowrd == pass) // direct return
-            {
-                return true;
-            }
-            return false;
+            Account acc = _customerAccounts[accountId];
+            return acc.Passowrd == pass ?  true :  false;
         }
 
-        public bool AuthenticateStaff(string accountID, string pass)
+        public bool AuthenticateStaff(string accountId, string pass)
         {
-            StaffAccount acc = _staffAccounts[accountID];
-            if (acc.Passowrd == pass) // direct return
-            {
-                return true;
-            }
-            return false;
+            StaffAccount acc = _staffAccounts[accountId];
+            return acc.Passowrd == pass ? true : false;
         }
 
-        public string UpdateCustomerName(string accountID,string newName)
+        public string UpdateCustomerName(string accountId,string newName)
         {
-            Account acc = _customerAccounts[accountID];
+            Account acc = _customerAccounts[accountId];
             acc.Name = newName;
             return newName;
         }
 
-        public string UpdateCustomerPassword(string accountID, string newPassword)
+        public string UpdateCustomerPassword(string accountId, string newPassword)
         {
-            Account acc = _customerAccounts[accountID];
+            Account acc = _customerAccounts[accountId];
             acc.Passowrd = newPassword;
             return newPassword;
         }
 
-        public bool DeleteCustomerAccount(string accountID)
+        public bool DeleteCustomerAccount(string accountId)
         {
-            return _customerAccounts.Remove(accountID);
+            return _customerAccounts.Remove(accountId);
         }
 
-        public string GetName(string accountID)
+        public string GetName(string accountId)
         {
-            return _customerAccounts[accountID].Name;
+            return _customerAccounts[accountId].Name;
         }
 
-        public float GetBalance(string accountID)
+        public float GetBalance(string accountId)
         {
-            return _customerAccounts[accountID].Balance;
+            return _customerAccounts[accountId].Balance;
         }
 
         public bool TransferAmount(string fromId, string toId, int amount)
@@ -152,36 +158,36 @@ namespace BankApp.Service
             {
                 return false;
             }
-            if(acc_from.BankID == acc_to.BankID)
+            if(acc_from.BankId == acc_to.BankId)
             {
-                float temp = amount * (_banks[acc_from.BankID].sRTGSCharge / 100);
+                float temp = amount * (_banks[acc_from.BankId].sRTGSCharge / 100);
                 UpdatedAmount = amount - temp;
             }
             else
             {
-                float temp = amount * (_banks[acc_from.BankID].oRTGSCharge / 100);
+                float temp = amount * (_banks[acc_from.BankId].oRTGSCharge / 100);
                 UpdatedAmount = amount - temp;
             }
 
-            string TIDFrom = acc_from.BankID + acc_from.AccountID + DateTime.Now.ToString("HHmmss");
-            acc_from.SetTransaction(new Transaction(TIDFrom, acc_from.AccountID, acc_to.AccountID, amount, 3, DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")));
-            string TIDTo = acc_to.BankID + acc_to.AccountID + DateTime.Now.ToString("HHmmss");
-            acc_to.SetTransaction(new Transaction(TIDTo, acc_from.AccountID, acc_to.AccountID, UpdatedAmount, 3, DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")));
+            string TIdFrom = $"{acc_from.BankId}{acc_from.AccountId}{GetDateTimeNow(true)}";
+            acc_from.SetTransaction(new Transaction(TIdFrom, acc_from.AccountId, acc_to.AccountId, amount, 3, GetDateTimeNow(false)));
+            string TIdTo = $"{acc_to.BankId}{acc_to.AccountId}{GetDateTimeNow(true)}";
+            acc_to.SetTransaction(new Transaction(TIdTo, acc_from.AccountId, acc_to.AccountId, UpdatedAmount, 3, GetDateTimeNow(false)));
 
-            this._transactions.Add(TIDFrom, new Transaction(TIDFrom,acc_from.AccountID,acc_to.AccountID,amount,3, DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"))); // create a function for DateTime.Now
+            this._transactions.Add(TIdFrom, new Transaction(TIdFrom,acc_from.AccountId,acc_to.AccountId,amount,3, GetDateTimeNow(false)));
 
-            _banks[acc_from.BankID].Profits += amount - UpdatedAmount; //EXTRA
+            _banks[acc_from.BankId].Profits += amount - UpdatedAmount; //EXTRA
             acc_from.Balance -= amount;
             acc_to.Balance += UpdatedAmount;
 
             return true;
         }
 
-        public ConsoleTable GetTransactions(string accountID)
+        public ConsoleTable GetTransactions(string accountId)
         {
-            Account acc = _customerAccounts[accountID];
+            Account acc = _customerAccounts[accountId];
             List<Transaction> _transactions = acc.GetTransactions();
-            ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = new[] { "TransactionID", "SendersAccountID", "RecieversAccountID", "Type", "Amount", "Time" }, EnableCount = false });
+            ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = new[] { "TransactionId", "SendersAccountId", "RecieversAccountId", "Type", "Amount", "Time" }, EnableCount = false });
             foreach(Transaction transaction in _transactions)
             {
                 string type = "";
@@ -197,54 +203,54 @@ namespace BankApp.Service
                         type = "Withdraw";
                         break;
                 }
-                table.AddRow( transaction.TransactionID, transaction.sID, transaction.rID, type, transaction.Amount, transaction.Time);
+                table.AddRow( transaction.TransactionId, transaction.sId, transaction.rId, type, transaction.Amount, transaction.Time);
             }
             return table;
         }
 
-        public int UpdatesRTGS(int val, string bankID)
+        public int UpdatesRTGS(int val, string bankId)
         {
-            Bank bank = _banks[bankID];
+            Bank bank = _banks[bankId];
             bank.sRTGSCharge = val;
             return val;
         }
 
-        public int UpdatesIMPS(int val, string bankID)
+        public int UpdatesIMPS(int val, string bankId)
         {
-            Bank bank = _banks[bankID];
+            Bank bank = _banks[bankId];
             bank.sRTGSCharge = val;
             return val;
         }
 
-        public int UpdateoRTGS(int val, string bankID)
+        public int UpdateoRTGS(int val, string bankId)
         {
-            Bank bank = _banks[bankID];
+            Bank bank = _banks[bankId];
             bank.sRTGSCharge = val;
             return val;
         }
 
-        public int UpdateoIMPS(int val, string bankID)
+        public int UpdateoIMPS(int val, string bankId)
         {
-            Bank bank = _banks[bankID];
+            Bank bank = _banks[bankId];
             bank.sRTGSCharge = val;
             return val;
         }
 
-        public float ShowBankProfits(string bankID)
+        public float ShowBankProfits(string bankId)
         {
-            Bank bank = _banks[bankID];
+            Bank bank = _banks[bankId];
             return bank.Profits;
         }
 
-        public bool RevertTransaction(string TID) 
+        public bool RevertTransaction(string transactionId) 
         {
-            Transaction transaction = _transactions[TID];
+            Transaction transaction = _transactions[transactionId];
             Account from = null;
             Account to = null;
             
-            if (transaction.sID == null)
+            if (transaction.sId == null)
             {
-                from = _customerAccounts[transaction.rID];
+                from = _customerAccounts[transaction.rId];
                 if (transaction.Type == (int) TransactionType.Deposit)
                 {
 
@@ -255,19 +261,19 @@ namespace BankApp.Service
 
                     from.Balance -= transaction.Amount;
                 }
-                from.Transactions.Remove(from.Transactions[from.Transactions.FindIndex(item => item.TransactionID == TID)]);
+                from.Transactions.Remove(from.Transactions[from.Transactions.FindIndex(item => item.TransactionId == transactionId)]);
                 return true;
             }
-            else if(transaction.rID == null)
+            else if(transaction.rId == null)
             {
-                to = _customerAccounts[transaction.sID];
+                to = _customerAccounts[transaction.sId];
                 to.Balance += transaction.Amount;
-                to.Transactions.Remove(to.Transactions[to.Transactions.FindIndex(item => item.TransactionID == TID)]);
+                to.Transactions.Remove(to.Transactions[to.Transactions.FindIndex(item => item.TransactionId == transactionId)]);
                 return true;
 
             }
-            from = _customerAccounts[transaction.sID];
-            to = _customerAccounts[transaction.rID];
+            from = _customerAccounts[transaction.sId];
+            to = _customerAccounts[transaction.rId];
 
             if (to.Balance < transaction.Amount)
             {
@@ -276,10 +282,10 @@ namespace BankApp.Service
             from.Balance += transaction.Amount;
             to.Balance -= transaction.Amount;
 
-            from.Transactions.Remove(from.Transactions[from.Transactions.FindIndex(item => item.TransactionID == TID)]);
-            to.Transactions.Remove(to.Transactions[to.Transactions.FindIndex(item => item.TransactionID == TID)]);
+            from.Transactions.Remove(from.Transactions[from.Transactions.FindIndex(item => item.TransactionId == transactionId)]);
+            to.Transactions.Remove(to.Transactions[to.Transactions.FindIndex(item => item.TransactionId == transactionId)]);
 
-            _transactions.Remove(TID);
+            _transactions.Remove(transactionId);
             return true;
         }
 
@@ -297,6 +303,8 @@ namespace BankApp.Service
         Deposit,
         Transfer,
     }
+
+    
 
 
 }

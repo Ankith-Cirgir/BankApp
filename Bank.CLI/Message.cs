@@ -23,7 +23,7 @@ namespace BankApp.CLI
         public static string AskPassword = "Enter Password: ";
         
 
-        public static string AskAccountID = "Enter the AccountID : ";
+        public static string AskAccountId = "Enter the AccountId : ";
         
 
         public static string AskDepositAmount = "Enter the amount to be deposited: ";
@@ -32,16 +32,16 @@ namespace BankApp.CLI
         public static string AskWithdrawAmount = "Enter the amount to withdraw: ";
         
 
-        public static string InvalidAccountID = "Invlid Account ID !!!";
+        public static string InvalIdAccountId = "InvlId Account Id !!!";
 
 
         public static string LoginMenu = "\n\n1) Transfer Money (INR only)\n2) Withdraw Money (INR only)\n3) Show Transactions\n4) Logout\n\nChoose an option:";
 
 
-        public static string InvalidCredentials = "Wrong ID or Password...";
+        public static string InvalIdCredentials = "Wrong Id or Password...";
 
 
-        public static string TransferAskID = "Enter the ID of the account to whome u want to transfer ammount: ";
+        public static string TransferAskId = "Enter the Id of the account to whome u want to transfer ammount: ";
 
 
         public static string AskTransferAmount = "Enter the amount to be transfered: ";
