@@ -30,7 +30,7 @@ namespace BankApp.CLI
         }
 
 
-        public static int GetNumber(string message)
+        public static float GetNumber(string message)
         {
             print(message);
             while (true)

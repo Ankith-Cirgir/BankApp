@@ -26,7 +26,7 @@ namespace BankApp.CLI
                             ClearScreen();
                             string depositId = GetString(Messages.AskAccountId);
                             string currency = GetString("Enter the first 3 letter if the currency: ");
-                            int amount = GetNumber(Messages.AskDepositAmount);
+                            float amount = GetNumber(Messages.AskDepositAmount);
                             string depositName = bankService.DepositAmount(depositId, amount, currency);
                             ClearScreen();
                             println($"{amount}₹ have been deposited into {depositName} Account");
@@ -37,7 +37,7 @@ namespace BankApp.CLI
                             ClearScreen();
                             string loginId, loginPassword;
 
-                            int option = GetNumber("1) Bankstaff Login \n2) Customer Login \n\nEnter Your Choice: ");
+                            int option = (int)GetNumber("1) Bankstaff Login \n2) Customer Login \n\nEnter Your Choice: ");
 
                             ClearScreen();
                             loginId = GetString(Messages.AskAccountId);
@@ -53,7 +53,6 @@ namespace BankApp.CLI
                                     while (!e)
                                     {
                                         ClearScreen();
-                                        //print(Messages.StaffLoginMenu);
                                         string ch = GetNumber(Messages.StaffLoginMenu).ToString();
                                         StaffLoginMenu StaffLoginMenu = (StaffLoginMenu)Enum.Parse(typeof(StaffLoginMenu), ch);
                                         switch (StaffLoginMenu)
@@ -70,7 +69,7 @@ namespace BankApp.CLI
 
                                             case StaffLoginMenu.UpdateAccount:
                                                 ClearScreen();
-                                                UpdateCustomerAccountMenu updateCustomerAccountLoginChoice = (UpdateCustomerAccountMenu)Enum.Parse(typeof(UpdateCustomerAccountMenu), GetString(Messages.UpdateCustomerAccount));
+                                                UpdateCustomerAccountMenu updateCustomerAccountLoginChoice = (UpdateCustomerAccountMenu)Enum.Parse(typeof(UpdateCustomerAccountMenu), GetNumber(Messages.UpdateCustomerAccount).ToString());
                                                 switch (updateCustomerAccountLoginChoice)
                                                 {
                                                     case UpdateCustomerAccountMenu.UpdateName:
@@ -107,28 +106,28 @@ namespace BankApp.CLI
                                                 break;
                                             case StaffLoginMenu.UpdatesRTGS:
                                                 string bankId = GetString("Enter Bank Id:");
-                                                int newsRTGS = GetNumber("Enter New sRTGS value: ");
-                                                int temp = bankService.UpdatesRTGS(newsRTGS,bankId);
+                                                float newsRTGS = GetNumber("Enter New sRTGS value: ");
+                                                float temp = bankService.UpdatesRTGS(newsRTGS,bankId);
                                                 print($"sRTGS updated to {temp}");
                                                 Console.ReadLine();
                                                 break;
                                             case StaffLoginMenu.UpdatesIMPS:
                                                 bankId = GetString("Enter Bank Id:");
-                                                int newsIMPS = GetNumber("Enter New sRTGS value: ");
+                                                float newsIMPS = GetNumber("Enter New sRTGS value: ");
                                                 temp = bankService.UpdatesRTGS(newsIMPS, bankId);
                                                 print($"sRTGS updated to {temp}");
                                                 Console.ReadLine();
                                                 break;
                                             case StaffLoginMenu.UpdateoRTGS:
                                                 bankId = GetString("Enter Bank Id:");
-                                                int newoRTGS = GetNumber("Enter New sRTGS value: ");
+                                                float newoRTGS = GetNumber("Enter New sRTGS value: ");
                                                 temp = bankService.UpdatesRTGS(newoRTGS, bankId);
                                                 print($"sRTGS updated to {temp}");
                                                 Console.ReadLine();
                                                 break;
                                             case StaffLoginMenu.UpdateoIMPS:
                                                 bankId = GetString("Enter Bank Id:");
-                                                int newoIMPS = GetNumber("Enter New sRTGS value: ");
+                                                float newoIMPS = GetNumber("Enter New sRTGS value: ");
                                                 temp = bankService.UpdatesRTGS(newoIMPS, bankId);
                                                 print($"sRTGS updated to {temp}");
                                                 Console.ReadLine();
@@ -187,13 +186,13 @@ namespace BankApp.CLI
                                         {
                                             case CustomerLoginMenu.TransferMoney:
                                                 string toId = GetString(Messages.TransferAskId); 
-                                                int transferAmount = GetNumber(Messages.AskTransferAmount);
+                                                float transferAmount = GetNumber(Messages.AskTransferAmount);
                                                 ClearScreen();
                                                 println(bankService.TransferAmount(loginId, toId, transferAmount) ? Messages.TransactionSuccess : Messages.TransactionErrorInsufficientBal);
                                                 Console.ReadLine();
                                                 break;
                                             case CustomerLoginMenu.Withdraw:
-                                                int withdrawAmount = GetNumber(Messages.AskWithdrawAmount); 
+                                                float withdrawAmount = GetNumber(Messages.AskWithdrawAmount); 
 
                                                 bool check = bankService.WithdrawAmount(loginId, withdrawAmount);
                                                 ClearScreen();

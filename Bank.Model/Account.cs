@@ -17,7 +17,7 @@ namespace BankApp.Model
 
         public Account(string name)
         {
-            this.AccountId = name.Substring(0, 3) + DateTime.Now.ToString("ddMMyyyyHHmmss");
+            this.AccountId = $"{name.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyyHHmmss")}";
             this.Name = name;
             this.Balance = 0;
         }

@@ -24,7 +24,7 @@ namespace BankApp.Model
         public Bank(string bankName,float sRTGS, float sIMPS, float oRTGS, float oIMPS)
         {
             this.Name = bankName;
-            this.Id = bankName.Substring(0, 3) + DateTime.Now.ToString("ddMMyyyy");
+            this.Id = $"{bankName.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyy")}";
             this.sRTGSCharge = sRTGS;
             this.sIMPSCharge = sIMPS;
             this.oRTGSCharge = oRTGS;
@@ -35,7 +35,7 @@ namespace BankApp.Model
         public Bank(string bankName)
         {
             this.Name = bankName;
-            this.Id = bankName.Substring(0, 3) + DateTime.Now.ToString("ddMMyyyy");
+            this.Id = $"{bankName.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyy")}";
             this.sRTGSCharge = 0;
             this.sIMPSCharge = 5;
             this.oRTGSCharge = 2;

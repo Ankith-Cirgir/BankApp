@@ -79,7 +79,7 @@ namespace BankApp.Service
             return "admin";
         }
 
-        public string DepositAmount(string accountId,int amount, string _currencyName)
+        public string DepositAmount(string accountId,float amount, string _currencyName)
         {
             Account acc = _customerAccounts[accountId];
             acc.Balance = acc.Balance + amount*(_currency[_currencyName]);
@@ -90,7 +90,7 @@ namespace BankApp.Service
             return acc.Name;
         }
 
-        public bool WithdrawAmount(string accountId, int amount)
+        public bool WithdrawAmount(string accountId, float amount)
         {
             Account acc = _customerAccounts[accountId];
             float bal = acc.Balance;
@@ -148,7 +148,7 @@ namespace BankApp.Service
             return _customerAccounts[accountId].Balance;
         }
 
-        public bool TransferAmount(string fromId, string toId, int amount)
+        public bool TransferAmount(string fromId, string toId, float amount)
         {
             float UpdatedAmount;
             Account acc_from = _customerAccounts[fromId];
@@ -208,28 +208,28 @@ namespace BankApp.Service
             return table;
         }
 
-        public int UpdatesRTGS(int val, string bankId)
+        public float UpdatesRTGS(float val, string bankId)
         {
             Bank bank = _banks[bankId];
             bank.sRTGSCharge = val;
             return val;
         }
 
-        public int UpdatesIMPS(int val, string bankId)
+        public float UpdatesIMPS(float val, string bankId)
         {
             Bank bank = _banks[bankId];
             bank.sRTGSCharge = val;
             return val;
         }
 
-        public int UpdateoRTGS(int val, string bankId)
+        public float UpdateoRTGS(float val, string bankId)
         {
             Bank bank = _banks[bankId];
             bank.sRTGSCharge = val;
             return val;
         }
 
-        public int UpdateoIMPS(int val, string bankId)
+        public float UpdateoIMPS(float val, string bankId)
         {
             Bank bank = _banks[bankId];
             bank.sRTGSCharge = val;
