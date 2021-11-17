@@ -41,6 +41,10 @@ namespace BankApp.Service
             string bankId = this.AddBank(bankName); 
             this.CreateStaffAccount("admin", "admin");
             this._currency.Add("INR",1);
+
+            SQLHandler sQLHandler = new SQLHandler();
+            sQLHandler.init();
+
             return bankId;
         }
 
