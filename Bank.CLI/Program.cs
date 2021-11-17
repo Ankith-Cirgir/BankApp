@@ -235,8 +235,5 @@ namespace BankApp.CLI
                 
             }
         }
-
-        
-
     }
 }

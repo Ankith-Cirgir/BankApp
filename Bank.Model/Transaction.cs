@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace BankApp.Model
 {
-    public class Transaction //Rename variables and methods
+    public class Transaction 
     {
         public static int Total { get; set; }
         public string TransactionId { get; set; }
-        public string sId { get; set; }
-        public string rId { get; set; }
+        public string SenderId { get; set; }
+        public string ReceiverId { get; set; }
         public float Amount { get; set; }
         public int Type { get; set; } 
         public string Time { get; set; }
@@ -19,8 +19,8 @@ namespace BankApp.Model
         public Transaction(string TransactionId,string sId, string rId, float amount, int type, string time)
         {
             this.TransactionId = TransactionId;
-            this.sId = sId;
-            this.rId = rId;
+            this.SenderId = sId;
+            this.ReceiverId = rId;
             this.Amount = amount;
             this.Type = type;
             this.Time = time;
@@ -29,7 +29,7 @@ namespace BankApp.Model
         public Transaction(string TransactionId, string rId, float amount, int type, string time)
         {
             this.TransactionId = TransactionId;
-            this.rId = rId;
+            this.ReceiverId = rId;
             this.Amount = amount;
             this.Type = type;
             this.Time = time;
