@@ -188,13 +188,13 @@ namespace BankApp.Service
                 string type = "";
                 switch (transaction.Type)
                 {
-                    case (int) TransactionType.Deposit:
+                    case (int) Transaction.TransactionType.Deposit:
                         type = "Deposit";
                         break;
-                    case (int)TransactionType.Transfer:
+                    case (int) Transaction.TransactionType.Transfer:
                         type = "Transfer";
                         break;
-                    case (int)TransactionType.Withdraw:
+                    case (int) Transaction.TransactionType.Withdraw:
                         type = "Withdraw";
                         break;
                 }
@@ -246,7 +246,7 @@ namespace BankApp.Service
             if (transaction.SenderId == null)
             {
                 from = _customerAccounts[transaction.ReceiverId];
-                if (transaction.Type == (int) TransactionType.Deposit)
+                if (transaction.Type == (int) Transaction.TransactionType.Deposit)
                 {
 
                     if (from.Balance < transaction.Amount)
@@ -291,15 +291,5 @@ namespace BankApp.Service
         }
 
     }
-
-    public enum TransactionType
-    {
-        Withdraw = 1,
-        Deposit,
-        Transfer,
-    }
-
-    
-
 
 }

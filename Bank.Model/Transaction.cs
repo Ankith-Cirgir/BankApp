@@ -35,5 +35,12 @@ namespace BankApp.Model
             this.Time = time;
             Total += 1;
         }
+        public enum TransactionType
+        {
+            Withdraw = 1,
+            Deposit,
+            Transfer,
+        }
+
     }
 }
