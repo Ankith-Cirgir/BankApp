@@ -43,4 +43,10 @@ namespace BankApp.CLI // add enum for type of transaction
         UpdatePassword,
         Back,
     }
+
+    public enum TransactionModeMenu
+    {
+        RTGS=1,
+        IMPS,
+    }
 }

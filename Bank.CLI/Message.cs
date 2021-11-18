@@ -14,6 +14,8 @@ namespace BankApp.CLI
         public static string StaffLoginMenu = "Choose an action...\n1) Create Account\n2) Update Account\n3) Delete Account\n4) Add Currency\n5) Update sRTGS\n6) Update sIMPS\n7) Update oRTGS\n8) Update oIMPS\n9) View Account Transaction\n10) Revert Transaction\n11) Logout\n12) Show Bank Profits\n\nEnter your choice: ";
 
 
+        public static string TransactionModeMenu = "Choose the type of transcation you want to perform: \n1)RTGS\n2)IMPS\n\nEnter your choice: ";
+
         public static string UpdateCustomerAccount = "Choose an action...\n1) Update Name\n2) Update Password\n3) Back\n\nEnter your choice: ";
         
 
