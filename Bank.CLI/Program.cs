@@ -19,7 +19,7 @@ namespace BankApp.CLI
             {
                 ClearScreen();
                 try {
-                    MainMenu mainMenu = (MainMenu)Enum.Parse(typeof(MainMenu), GetString(Messages.WelcomeMenu)); // TRY PARSE
+                    MainMenu mainMenu = (MainMenu)Enum.Parse(typeof(MainMenu), GetString(Messages.WelcomeMenu));
                     switch (mainMenu)
                     {
                         case MainMenu.Deposit:

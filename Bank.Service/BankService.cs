@@ -9,19 +9,10 @@ using ConsoleTables;
 namespace BankApp.Service
 {
     public class BankService
-        // used string interpolation whereever possible
-        // created GetDateTimeNow funtion to reuse code
     {
         public string GetDateTimeNow(bool forId)
         {
-            if (forId)
-            {
-                return DateTime.Now.ToString("ddMMyyyyHHmmss");
-            }
-            else
-            {
-                return DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            }
+            return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
         
 
@@ -176,7 +167,7 @@ namespace BankApp.Service
 
             this._transactions.Add(TIdFrom, new Transaction(TIdFrom,acc_from.AccountId,acc_to.AccountId,amount,3, GetDateTimeNow(false)));
 
-            _banks[acc_from.BankId].Profits += amount - UpdatedAmount; //EXTRA
+            _banks[acc_from.BankId].Profits += amount - UpdatedAmount;
             acc_from.Balance -= amount;
             acc_to.Balance += UpdatedAmount;
 
