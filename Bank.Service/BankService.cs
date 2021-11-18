@@ -25,7 +25,7 @@ namespace BankApp.Service
         private Dictionary<string, Transaction> _transactions = new Dictionary<string, Transaction>();
 
         private Dictionary<string, float> _currency = new Dictionary<string, float>();
-
+         
         string bankId;
         public string init() {
             string bankName = "MoneyBank";
