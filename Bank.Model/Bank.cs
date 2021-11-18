@@ -8,7 +8,7 @@ namespace BankApp.Model
 {
     public class Bank
     {
-        public float Profits { get; set; } //EXTRA
+        public float Profits { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
 
