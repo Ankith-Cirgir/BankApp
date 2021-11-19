@@ -8,6 +8,9 @@ namespace BankApp.Service
 {
     class SqlQueries
     {
+        public static string CheckTabelsExist = "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'bankapp' AND table_name = 'banks' LIMIT 1;";
+
+
         public static string CreateDatabase = "CREATE DATABASE bankapp;";
         public static string CreateBanksTable = "CREATE TABLE `bankapp`.`banks` (`BankId` VARCHAR(45) NOT NULL,`BankName` VARCHAR(45) NULL,`Profits` FLOAT NULL DEFAULT 0,`sRTGSCharge` FLOAT NULL DEFAULT 0,`sIMPSCharge` FLOAT NULL DEFAULT 5,`oRTGSCharge` FLOAT NULL DEFAULT 2,`oIMPSCharge` FLOAT NULL DEFAULT 6,PRIMARY KEY(`BankId`));";
         public static string CreateCustomerAccountsTable = "CREATE TABLE `bankapp`.`customeraccounts` (`AccountId` VARCHAR(45) NOT NULL,`BankId` VARCHAR(45) NULL,`Balance` FLOAT NULL DEFAULT 0,`Name` VARCHAR(45) NOT NULL,`Password` VARCHAR(45) NOT NULL,PRIMARY KEY(`AccountId`));";
@@ -15,5 +18,13 @@ namespace BankApp.Service
         public static string CreateTransactionsTable = "CREATE TABLE `bankapp`.`transactions` (`TransactionId` VARCHAR(45) NOT NULL,`Amount` FLOAT NULL,`Type` INT NOT NULL,`Time` VARCHAR(45) NOT NULL,`SenderId` VARCHAR(45) NULL DEFAULT NULL,`RecieverId` VARCHAR(45) NULL DEFAULT NULL,PRIMARY KEY(`TransactionId`));";
 
         public static string SelectBanks = "SELECT * FROM Banks";
+
+
+        public static string InsertIntoCustomersTable = "INSERT INTO `bankapp`.`customeraccounts`(`AccountId`,`BankId`,`Balance`,`Name`,`Password`)VALUES('{0}', '{1}', '{2}', '{3}', '{4}');";
+
+        public static string InsertIntoStaffsTable = "INSERT INTO `bankapp`.`staffaccounts`(`AccountId`,`BankId`,`Name`,`Password`)VALUES('{0}', '{1}', '{2}', '{3}');";
+
+
+
     }
 }

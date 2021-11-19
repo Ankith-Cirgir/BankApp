@@ -11,12 +11,40 @@ namespace BankApp.Service
     class SQLHandler
     {
         private string connStr;
-        public void init()
+        public string init()
         {
             connStr = "server=localhost;user=root;database=bankapp;port=3306;password=admin";
+            try
+            {
+                
+                CreateStaffAccount("admin", "admin", "admin", "Mon09112021");
+                
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CheckTabelsExist, conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                        string temp = "";
+                        while (reader.Read())
+                        {
+                            temp += reader.GetString(0);
+                        }
+                        if(temp != "1" || temp == null )
+                        {
+                            return CreateTables();
+                        }
+                        return "Tables already exist !!";
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                return $"SQL ERROR WHILE INITILIZING DB \n{e}";
+            }
         }
 
-        public string CreateBanksTable()
+        public string CreateTables()
         {
             try
             {
@@ -26,20 +54,112 @@ namespace BankApp.Service
                     {
                         cmd.Connection.Open();
                         MySqlDataReader reader = cmd.ExecuteReader();
-                        string temp = "";
-                        while (reader.Read())
-                        {
-                            temp += reader.GetString(0);
-                        }
-                        return temp;
                     }
                 }
+
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateCustomerAccountsTable, conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                    }
+                            
+                }
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateStaffAccountsTable, conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                    }
+
+                }
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateTransactionsTable, conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                    }
+
+                }
+
+                return "Succesfully created all tables !!";
             }
             catch (Exception e)
             {
                 return "SQL ERROR: " + e.ToString();
             }
         }
+
+        public string CreateCustomerAccount(string name, string password, string bankId)
+        {
+            string accountId = $"{name.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyyHHmmss")}";
+
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.InsertIntoCustomersTable, accountId, bankId, 0, name, password), conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
+            return accountId;
+        }
+
+        public string CreateStaffAccount(string accountId, string name, string password, string bankId)
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.InsertIntoStaffsTable, accountId, bankId, name, password), conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
+            return accountId;
+        }
+
+        public string CreateStaffAccount(string name, string password, string bankId)
+        {
+            string accountId = $"{name.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyyHHmmss")}";
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.InsertIntoStaffsTable, accountId, bankId, name, password), conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+
+            return accountId;
+        }
+
+
 
 
     }

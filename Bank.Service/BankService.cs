@@ -34,7 +34,8 @@ namespace BankApp.Service
             this._currency.Add("INR",1);
 
             SQLHandler sQLHandler = new SQLHandler();
-            sQLHandler.init();
+            Console.Write(sQLHandler.init());
+            Console.ReadLine();
 
             return bankId;
         }
