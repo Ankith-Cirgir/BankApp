@@ -185,10 +185,20 @@ namespace BankApp.CLI
                                         switch (loginChoice)
                                         {
                                             case CustomerLoginMenu.TransferMoney:
-                                                string toId = GetString(Messages.TransferAskId); 
+                                                int transferMoneyChoice = (int)GetNumber(Messages.TransactionModeMenu);
+                                                TransactionModeMenu transactionModeMenu = (TransactionModeMenu)Enum.Parse(typeof(TransactionModeMenu), transferMoneyChoice.ToString());
+                                                string toId = GetString(Messages.TransferAskId);
                                                 float transferAmount = GetNumber(Messages.AskTransferAmount);
                                                 ClearScreen();
-                                                println(bankService.TransferAmount(loginId, toId, transferAmount) ? Messages.TransactionSuccess : Messages.TransactionErrorInsufficientBal);
+                                                switch (transactionModeMenu)
+                                                {
+                                                    case TransactionModeMenu.RTGS:
+                                                        println(bankService.TransferAmountRTGS(loginId, toId, transferAmount) ? Messages.TransactionSuccess : Messages.TransactionErrorInsufficientBal);
+                                                        break;
+                                                    case TransactionModeMenu.IMPS:
+                                                        println(bankService.TransferAmountIMPS(loginId, toId, transferAmount) ? Messages.TransactionSuccess : Messages.TransactionErrorInsufficientBal);
+                                                        break;
+                                                }
                                                 Console.ReadLine();
                                                 break;
                                             case CustomerLoginMenu.Withdraw:

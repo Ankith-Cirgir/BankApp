@@ -143,7 +143,7 @@ namespace BankApp.Service
             return _customerAccounts[accountId].Balance;
         }
 
-        public bool TransferAmount(string fromId, string toId, float amount)
+        public bool TransferAmountRTGS(string fromId, string toId, float amount)
         {
             float UpdatedAmount;
             CustomerAccount acc_from = _customerAccounts[fromId];
@@ -170,6 +170,41 @@ namespace BankApp.Service
             acc_to.SetTransaction(new Transaction(TIdTo, acc_from.AccountId, acc_to.AccountId, UpdatedAmount, 3, GetDateTimeNow(false)));
 
             this._transactions.Add(TIdFrom, new Transaction(TIdFrom,acc_from.AccountId,acc_to.AccountId,amount,3, GetDateTimeNow(false)));
+
+            _banks[acc_from.BankId].Profits += amount - UpdatedAmount;
+            acc_from.Balance -= amount;
+            acc_to.Balance += UpdatedAmount;
+
+            return true;
+        }
+
+        public bool TransferAmountIMPS(string fromId, string toId, float amount)
+        {
+            float UpdatedAmount;
+            CustomerAccount acc_from = _customerAccounts[fromId];
+            CustomerAccount acc_to = _customerAccounts[toId];
+
+            if (acc_from.Balance - amount < 0)
+            {
+                return false;
+            }
+            if (acc_from.BankId == acc_to.BankId)
+            {
+                float temp = amount * (_banks[acc_from.BankId].sIMPSCharge / 100);
+                UpdatedAmount = amount - temp;
+            }
+            else
+            {
+                float temp = amount * (_banks[acc_from.BankId].oIMPSCharge / 100);
+                UpdatedAmount = amount - temp;
+            }
+
+            string TIdFrom = $"{acc_from.BankId}{acc_from.AccountId}{GetDateTimeNow(true)}";
+            acc_from.SetTransaction(new Transaction(TIdFrom, acc_from.AccountId, acc_to.AccountId, amount, 3, GetDateTimeNow(false)));
+            string TIdTo = $"{acc_to.BankId}{acc_to.AccountId}{GetDateTimeNow(true)}";
+            acc_to.SetTransaction(new Transaction(TIdTo, acc_from.AccountId, acc_to.AccountId, UpdatedAmount, 3, GetDateTimeNow(false)));
+
+            this._transactions.Add(TIdFrom, new Transaction(TIdFrom, acc_from.AccountId, acc_to.AccountId, amount, 3, GetDateTimeNow(false)));
 
             _banks[acc_from.BankId].Profits += amount - UpdatedAmount;
             acc_from.Balance -= amount;
