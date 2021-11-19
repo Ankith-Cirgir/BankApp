@@ -49,4 +49,5 @@ namespace BankApp.CLI // add enum for type of transaction
         RTGS=1,
         IMPS,
     }
+
 }
