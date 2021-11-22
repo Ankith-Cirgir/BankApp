@@ -13,9 +13,11 @@ namespace BankApp.Service
 
         public static string CreateDatabase = "CREATE DATABASE bankapp;";
         public static string CreateBanksTable = "CREATE TABLE `bankapp`.`banks` (`BankId` VARCHAR(45) NOT NULL,`BankName` VARCHAR(45) NULL,`Profits` FLOAT NULL DEFAULT 0,`sRTGSCharge` FLOAT NULL DEFAULT 0,`sIMPSCharge` FLOAT NULL DEFAULT 5,`oRTGSCharge` FLOAT NULL DEFAULT 2,`oIMPSCharge` FLOAT NULL DEFAULT 6,PRIMARY KEY(`BankId`));";
-        public static string CreateCustomerAccountsTable = "CREATE TABLE `bankapp`.`customeraccounts` (`AccountId` VARCHAR(45) NOT NULL,`BankId` VARCHAR(45) NULL,`Balance` FLOAT NULL DEFAULT 0,`Name` VARCHAR(45) NOT NULL,`Password` VARCHAR(45) NOT NULL,PRIMARY KEY(`AccountId`));";
-        public static string CreateStaffAccountsTable = "CREATE TABLE `bankapp`.`staffaccounts` (`AccountId` VARCHAR(45) NOT NULL,`BankId` VARCHAR(45) NULL,`Name` VARCHAR(45) NOT NULL,`Password` VARCHAR(45) NOT NULL,PRIMARY KEY(`AccountId`));";
+        public static string CreateCustomerAccountsTable = "CREATE TABLE `bankapp`.`customeraccounts` ( `AccountId` VARCHAR(45) NOT NULL, `BankId` VARCHAR(45) NOT NULL, `Balance` FLOAT NULL DEFAULT 0, `Name` VARCHAR(45) NOT NULL, `Password` VARCHAR(45) NOT NULL, PRIMARY KEY (`AccountId`), INDEX `customer bankId link_idx` (`BankId` ASC) VISIBLE, CONSTRAINT `customer bankId link` FOREIGN KEY (`BankId`) REFERENCES `bankapp`.`banks` (`BankId`) ON DELETE NO ACTION ON UPDATE NO ACTION);";
+        public static string CreateStaffAccountsTable = "CREATE TABLE `bankapp`.`staffaccounts` ( `AccountId` VARCHAR(45) NOT NULL, `BankId` VARCHAR(45) NOT NULL, `Name` VARCHAR(45) NOT NULL, `Password` VARCHAR(45) NOT NULL, PRIMARY KEY (`AccountId`), INDEX `staff and bankId link_idx` (`BankId` ASC) VISIBLE, CONSTRAINT `staff and bankId link` FOREIGN KEY (`BankId`) REFERENCES `bankapp`.`banks` (`BankId`) ON DELETE NO ACTION ON UPDATE NO ACTION);";
         public static string CreateTransactionsTable = "CREATE TABLE `bankapp`.`transactions` (`TransactionId` VARCHAR(45) NOT NULL,`Amount` FLOAT NULL,`Type` INT NOT NULL,`Time` VARCHAR(45) NOT NULL,`SenderId` VARCHAR(45) NULL DEFAULT NULL,`RecieverId` VARCHAR(45) NULL DEFAULT NULL,PRIMARY KEY(`TransactionId`));";
+        public static string CreateCurrencyTable = "CREATE TABLE `bankapp`.`currency` ( `currency` VARCHAR(4) NOT NULL, `BankId` VARCHAR(45) NULL, PRIMARY KEY (`currency`), INDEX `bank and currency link_idx` (`BankId` ASC) VISIBLE, CONSTRAINT `bank and currency link` FOREIGN KEY (`BankId`) REFERENCES `bankapp`.`banks` (`BankId`) ON DELETE NO ACTION ON UPDATE NO ACTION);";
+
 
         public static string SelectBanks = "SELECT * FROM Banks";
 
@@ -24,7 +26,7 @@ namespace BankApp.Service
 
         public static string InsertIntoStaffsTable = "INSERT INTO `bankapp`.`staffaccounts`(`AccountId`,`BankId`,`Name`,`Password`)VALUES('{0}', '{1}', '{2}', '{3}');";
 
-
+        public static string InsertIntoBanksTable = "INSERT INTO `bankapp`.`banks`(`BankId`,`BankName`,`Profits`,`sRTGSCharge`,`sIMPSCharge`,`oRTGSCharge`,`oIMPSCharge`)VALUES({0}, {1}, {2}, {3}, {4}, {5}>, {6}); ";
 
     }
 }

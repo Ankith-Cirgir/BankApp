@@ -41,7 +41,7 @@ namespace BankApp.Service
         }
 
 
-        public string AddBank(string name, int sRTGS, int sIMPS, int oRTGS, int oIMPS)
+        public string AddBank(string name, float sRTGS, float sIMPS, float oRTGS, float oIMPS)
         {
             Bank bank = new Bank(name, sRTGS, sIMPS, oRTGS, oIMPS);
             this._banks.Add(bank.Id, bank);

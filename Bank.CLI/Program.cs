@@ -5,7 +5,6 @@ using ConsoleTables;
 
 namespace BankApp.CLI
 {
-
     public partial class Program
     {
         static void Main(string[] args)

@@ -11,6 +11,11 @@ namespace BankApp.Service
     class SQLHandler
     {
         private string connStr;
+
+        public string GetDateTimeNow(bool forId)
+        {
+            return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        }
         public string init()
         {
             connStr = "server=localhost;user=root;database=bankapp;port=3306;password=admin";
@@ -85,6 +90,16 @@ namespace BankApp.Service
 
                 }
 
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateCurrencyTable, conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                    }
+
+                }
+
                 return "Succesfully created all tables !!";
             }
             catch (Exception e)
@@ -139,7 +154,7 @@ namespace BankApp.Service
 
         public string CreateStaffAccount(string name, string password, string bankId)
         {
-            string accountId = $"{name.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyyHHmmss")}";
+            string accountId = $"{name.Substring(0, 3)}{GetDateTimeNow(true)}";
             try
             {
                 using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -159,8 +174,49 @@ namespace BankApp.Service
             return accountId;
         }
 
+        public string AddBank(string name)
+        {
+            string bankId = $"{name.Substring(0, 3)}{GetDateTimeNow(true)}";
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.InsertIntoBanksTable, bankId, name, 0, 5, 2, 6), conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+            return bankId;
+        }
 
+        public string AddBank(string name, float sRTGS, float sIMPS, float oRTGS, float oIMPS )
+        {
+            string bankId = $"{name.Substring(0, 3)}{GetDateTimeNow(true)}";
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.InsertIntoBanksTable, bankId, name, sRTGS, sIMPS, oRTGS, oIMPS), conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+            return bankId;
+        }
 
+        
 
     }
 }
