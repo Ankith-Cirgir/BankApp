@@ -23,10 +23,20 @@ namespace BankApp.Service
 
 
         public static string InsertIntoCustomersTable = "INSERT INTO `bankapp`.`customeraccounts`(`AccountId`,`BankId`,`Balance`,`Name`,`Password`)VALUES('{0}', '{1}', '{2}', '{3}', '{4}');";
-
         public static string InsertIntoStaffsTable = "INSERT INTO `bankapp`.`staffaccounts`(`AccountId`,`BankId`,`Name`,`Password`)VALUES('{0}', '{1}', '{2}', '{3}');";
-
         public static string InsertIntoBanksTable = "INSERT INTO `bankapp`.`banks`(`BankId`,`BankName`,`Profits`,`sRTGSCharge`,`sIMPSCharge`,`oRTGSCharge`,`oIMPSCharge`)VALUES({0}, {1}, {2}, {3}, {4}, {5}>, {6}); ";
 
+
+        public static string GetBalance = "Select `Balance` from `bankapp`.`customeraccounts` where AccountId = {0};";
+        public static string GetName = "Select `Name` from `bankapp`.`customeraccounts` where AccountId = {0};";
+
+
+        public static string DeleteCustomerAccount = "DELETE FROM `bankapp`.`customeraccounts` WHERE AccountId = '{0}';";
+
+        public static string UpdatePassword = "UPDATE `bankapp`.`customeraccounts` SET `Password` = {0} WHERE `AccountId` = {1};";
+        public static string UpdateName = "UPDATE `bankapp`.`customeraccounts` SET `Name` = {0} WHERE `AccountId` = {1};";
+
+        public static string AuthenticateCustomer = "SELECT EXISTS(SELECT 1 FROM `bankapp`.`customeraccounts` WHERE AccountId = {0});";
+        public static string AuthenticateStaff = "SELECT EXISTS(SELECT 1 FROM `bankapp`.`staffaccounts` WHERE AccountId = {0});";
     }
 }
