@@ -20,23 +20,32 @@ namespace BankApp.Service
 
 
         public static string SelectBanks = "SELECT * FROM Banks";
+        public static string GetBankProfits = "SELECT Profits from `bankapp`.`banks` where BankId = '{0}';";
+        public static string GetBalance = "SELECT `Balance` from `bankapp`.`customeraccounts` where AccountId = '{0}';";
+        public static string GetName = "SELECT `Name` from `bankapp`.`customeraccounts` where AccountId = '{0}';";
+        public static string GetBankId = "SELECT `BankId` from `bankapp`.`customeraccounts` where AccountId = '{0}';";
 
 
-        public static string InsertIntoCustomersTable = "INSERT INTO `bankapp`.`customeraccounts`(`AccountId`,`BankId`,`Balance`,`Name`,`Password`)VALUES('{0}', '{1}', '{2}', '{3}', '{4}');";
+        public static string InsertIntoCustomersTable = "INSERT INTO `bankapp`.`customeraccounts`(`AccountId`,`BankId`,`Balance`,`Name`,`Password`)VALUES('{0}', '{1}', {2}, '{3}', '{4}');";
         public static string InsertIntoStaffsTable = "INSERT INTO `bankapp`.`staffaccounts`(`AccountId`,`BankId`,`Name`,`Password`)VALUES('{0}', '{1}', '{2}', '{3}');";
-        public static string InsertIntoBanksTable = "INSERT INTO `bankapp`.`banks`(`BankId`,`BankName`,`Profits`,`sRTGSCharge`,`sIMPSCharge`,`oRTGSCharge`,`oIMPSCharge`)VALUES({0}, {1}, {2}, {3}, {4}, {5}>, {6}); ";
-
-
-        public static string GetBalance = "Select `Balance` from `bankapp`.`customeraccounts` where AccountId = {0};";
-        public static string GetName = "Select `Name` from `bankapp`.`customeraccounts` where AccountId = {0};";
-
+        public static string InsertIntoBanksTable = "INSERT INTO `bankapp`.`banks`(`BankId`,`BankName`,`Profits`,`sRTGSCharge`,`sIMPSCharge`,`oRTGSCharge`,`oIMPSCharge`)VALUES('{0}', '{1}', {2}, {3}, {4}, {5}>, {6}); ";
+        public static string AddCurrency = "INSERT INTO `bankapp`.`currency` (`currency`, `BankId`, `value`) VALUES ('{0}', '{1}', {2});";
+        public static string InsertTransaction = "INSERT INTO `bankapp`.`transactions` (`TransactionId`, `Amount`, `Type`, `Time`, `SenderId`, `ReceiverId`) VALUES ({0}, {1}, {2}, {3}, {4}, {5});";
+        
 
         public static string DeleteCustomerAccount = "DELETE FROM `bankapp`.`customeraccounts` WHERE AccountId = '{0}';";
 
-        public static string UpdatePassword = "UPDATE `bankapp`.`customeraccounts` SET `Password` = {0} WHERE `AccountId` = {1};";
-        public static string UpdateName = "UPDATE `bankapp`.`customeraccounts` SET `Name` = {0} WHERE `AccountId` = {1};";
 
-        public static string AuthenticateCustomer = "SELECT EXISTS(SELECT 1 FROM `bankapp`.`customeraccounts` WHERE AccountId = {0});";
-        public static string AuthenticateStaff = "SELECT EXISTS(SELECT 1 FROM `bankapp`.`staffaccounts` WHERE AccountId = {0});";
+        public static string UpdateBalance = "UPDATE `bankapp`.`customeraccounts` SET  `Balance` = {0} WHERE `AccountId` = '{1}';";
+        public static string UpdatePassword = "UPDATE `bankapp`.`customeraccounts` SET `Password` = '{0}' WHERE `AccountId` = '{1}';";
+        public static string UpdateName = "UPDATE `bankapp`.`customeraccounts` SET `Name` = '{0}' WHERE `AccountId` = '{1}';";
+        public static string UpdatesRTGS = "UPDATE `bankapp`.`banks` SET `sRTGSCharge` = {0}, WHERE `BankId` = '{1}';";
+        public static string UpdatesIMPS = "UPDATE `bankapp`.`banks` SET `sIMPSCharge` = {0}, WHERE `BankId` = '{1}';";
+        public static string UpdateoRTGS = "UPDATE `bankapp`.`banks` SET `oRTGSCharge` = {0}, WHERE `BankId` = '{1}';";
+        public static string UpdateoIMPS = "UPDATE `bankapp`.`banks` SET `oIMPSCharge` = {0}, WHERE `BankId` = '{1}';";
+
+
+        public static string AuthenticateCustomer = "SELECT EXISTS(SELECT 1 FROM `bankapp`.`customeraccounts` WHERE AccountId = '{0}');";
+        public static string AuthenticateStaff = "SELECT EXISTS(SELECT 1 FROM `bankapp`.`staffaccounts` WHERE AccountId = '{0}');";
     }
 }

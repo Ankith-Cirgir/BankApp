@@ -267,10 +267,10 @@ namespace BankApp.Service
             return val;
         }
 
-        public float ShowBankProfits(string bankId)
+        public string GetBankProfits(string bankId)
         {
             Bank bank = _banks[bankId];
-            return bank.Profits;
+            return bank.Profits.ToString();
         }
 
         public bool RevertTransaction(string transactionId) 

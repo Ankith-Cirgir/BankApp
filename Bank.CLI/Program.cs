@@ -152,7 +152,7 @@ namespace BankApp.CLI
                                                 break;
                                             case StaffLoginMenu.ShowBankProfits:
                                                 bankId = GetString("Enter BankId: ");
-                                                print(bankService.ShowBankProfits(bankId).ToString());
+                                                print(bankService.GetBankProfits(bankId));
                                                 Console.ReadLine();
                                                 break;
                                         }
