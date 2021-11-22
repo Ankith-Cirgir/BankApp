@@ -24,6 +24,7 @@ namespace BankApp.Service
         public static string GetBalance = "SELECT `Balance` from `bankapp`.`customeraccounts` where AccountId = '{0}';";
         public static string GetName = "SELECT `Name` from `bankapp`.`customeraccounts` where AccountId = '{0}';";
         public static string GetBankId = "SELECT `BankId` from `bankapp`.`customeraccounts` where AccountId = '{0}';";
+        public static string GetCurrencyValue = "SELECT `Value` from `bankapp`.`currency` where currency = '{0}'";
 
 
         public static string InsertIntoCustomersTable = "INSERT INTO `bankapp`.`customeraccounts`(`AccountId`,`BankId`,`Balance`,`Name`,`Password`)VALUES('{0}', '{1}', {2}, '{3}', '{4}');";

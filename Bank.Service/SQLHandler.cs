@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data;
 using MySql.Data.MySqlClient;
+using System.Globalization;
 
 namespace BankApp.Service
 {
@@ -16,6 +17,7 @@ namespace BankApp.Service
         {
             return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
+
         public string init()
         {
             connStr = "server=localhost;user=root;database=bankapp;port=3306;password=admin";
@@ -540,7 +542,6 @@ namespace BankApp.Service
             }
         }
 
-
         public void GenerateTransaction(string rId, float amount, int type)
         {
             string TId = $"{GetBankId(rId)}{rId}{GetDateTimeNow(true)}";
@@ -561,12 +562,30 @@ namespace BankApp.Service
             }
         }
 
+        public float GetCurrencyValue(string currencyName)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetCurrencyValue, currencyName), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetValue(0);
+                    }
+                    return float.Parse(temp, CultureInfo.InvariantCulture.NumberFormat);
+                }
+            }
+        }
+
         public string DepositAmount(string accountId, float amount, string currencyName)
         {
             try
             {
                 float currentBalance = GetBalance(accountId);
-                float newBalance = currentBalance + amount;
+                float newBalance = currentBalance + amount * GetCurrencyValue(currencyName);
                 using (MySqlConnection conn = new MySqlConnection(connStr))
                 {
                     using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.UpdateBalance, newBalance, accountId), conn))
@@ -599,6 +618,7 @@ namespace BankApp.Service
                     {
                         cmd.Connection.Open();
                         MySqlDataReader reader = cmd.ExecuteReader();
+                        GenerateTransaction(accountId, amount, 1);
                         return true;
                     }
                 }
