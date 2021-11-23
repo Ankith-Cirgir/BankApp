@@ -58,9 +58,10 @@ namespace BankApp.CLI
                                         {
                                             case StaffLoginMenu.CreateAccount:
                                                 ClearScreen();
+                                                string createAccountBankId = GetString("Enter the BankId: ");
                                                 string createAccountName = GetString(Messages.AskName);
                                                 string createAccountPassword = GetString(Messages.AskPassword);
-                                                string createAccountId = bankService.CreateCustomerAccount(createAccountName, createAccountPassword);
+                                                string createAccountId = bankService.CreateCustomerAccount(createAccountName, createAccountPassword, createAccountBankId);
                                                 ClearScreen();
                                                 println($"Bank account created with:\nAccount Id: {createAccountId}\nPassword:{createAccountPassword}");
                                                 Console.ReadLine();
@@ -99,9 +100,10 @@ namespace BankApp.CLI
                                                 break;
                                             case StaffLoginMenu.AddCurrency:
                                                 ClearScreen();
+                                                string addCurrencyBankId = GetString("Enter the BankId: ");
                                                 string currencyName = GetString("Enter 3 letter name of the new currency: ");
                                                 float rate = GetNumber($"Enter the number of rupees per one {currencyName}: ");
-                                                bankService.AddCurrency(currencyName,rate);
+                                                bankService.AddCurrency(currencyName, rate, addCurrencyBankId);
                                                 break;
                                             case StaffLoginMenu.UpdatesRTGS:
                                                 string bankId = GetString("Enter Bank Id:");
@@ -152,7 +154,7 @@ namespace BankApp.CLI
                                                 break;
                                             case StaffLoginMenu.ShowBankProfits:
                                                 bankId = GetString("Enter BankId: ");
-                                                print(bankService.GetBankProfits(bankId));
+                                                print(bankService.GetBankProfits(bankId).ToString());
                                                 Console.ReadLine();
                                                 break;
                                         }

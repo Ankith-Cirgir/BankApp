@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Globalization;
+using ConsoleTables;
+using static BankApp.Model.Transaction;
 
 namespace BankApp.Service
 {
@@ -239,9 +241,24 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return -1;
+            }
+        }
+
+        public bool UpdateBalance(string accountId, float newBalance)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.UpdateBalance, newBalance, accountId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+
+                    return true;
+
+                }
             }
         }
 
@@ -286,7 +303,7 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return false;
             }
@@ -354,7 +371,7 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return false;
             }
@@ -380,7 +397,7 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return false;
             }
@@ -401,7 +418,7 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return -1;
             }
@@ -422,7 +439,7 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return -1;
             }
@@ -443,7 +460,7 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return -1;
             }
@@ -464,35 +481,121 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return -1;
             }
         }
 
-        public string GetBankProfits(string bankId)
+        public float GetBankProfits(string bankId)
         {
-            try
+            using (MySqlConnection conn = new MySqlConnection(connStr))
             {
-                using (MySqlConnection conn = new MySqlConnection(connStr))
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetBankProfits, bankId), conn))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetBankProfits, bankId), conn))
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
                     {
-                        cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                        string temp = "";
-                        while (reader.Read())
-                        {
-                            temp += reader.GetString(0);
-                        }
-
-                        return temp;
+                        temp += reader.GetString(0);
                     }
+
+                    return float.Parse(temp);
                 }
             }
-            catch (Exception e)
+            
+        }
+
+        public void UpdateBankProfits(string bankId, float amount)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
             {
-                return e.ToString();
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.UpdateBankProfits, amount, bankId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                }
+            }
+        }
+
+        public float GetBanksRTGSCharges(string bankId)
+        {
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetBanksRTGSCharges, bankId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetString(0);
+                    }
+
+                    return float.Parse(temp);
+                }
+            }
+        }
+
+        public float GetBanksIMPSCharges(string bankId)
+        {
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetBanksIMPSCharges, bankId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetString(0);
+                    }
+
+                    return float.Parse(temp);
+                }
+            }
+        }
+
+        public float GetBankoRTGSCharges(string bankId)
+        {
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetBankoRTGSCharges, bankId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetString(0);
+                    }
+
+                    return float.Parse(temp);
+                }
+            }
+        }
+
+        public float GetBankoIMPSCharges(string bankId)
+        {
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetBankoIMPSCharges, bankId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetString(0);
+                    }
+
+                    return float.Parse(temp);
+                }
             }
         }
 
@@ -510,7 +613,7 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return false;
             }
@@ -542,23 +645,31 @@ namespace BankApp.Service
             }
         }
 
-        public void GenerateTransaction(string rId, float amount, int type)
+        public void GenerateTransaction(string senderId, string receiverId, float amount, int type)
         {
-            string TId = $"{GetBankId(rId)}{rId}{GetDateTimeNow(true)}";
-            try
+            string TId = $"{GetBankId(receiverId)}{receiverId}{GetDateTimeNow(true)}";
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
             {
-                using (MySqlConnection conn = new MySqlConnection(connStr))
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.InsertTransaction, TId, amount, type, GetDateTimeNow(false), senderId, receiverId), conn))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.InsertTransaction, TId, amount, type, GetDateTimeNow(false), null,rId), conn))
-                    {
-                        cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                    }
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
                 }
             }
-            catch
-            {
+        }
 
+        public void GenerateTransaction(string receiverId, float amount, int type)
+        {
+            string TId = $"{GetBankId(receiverId)}{receiverId}{GetDateTimeNow(true)}";
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.InsertTransactionReceiver, TId, amount, type, GetDateTimeNow(false), receiverId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                }
             }
         }
 
@@ -586,13 +697,14 @@ namespace BankApp.Service
             {
                 float currentBalance = GetBalance(accountId);
                 float newBalance = currentBalance + amount * GetCurrencyValue(currencyName);
+                
                 using (MySqlConnection conn = new MySqlConnection(connStr))
                 {
                     using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.UpdateBalance, newBalance, accountId), conn))
                     {
                         cmd.Connection.Open();
                         MySqlDataReader reader = cmd.ExecuteReader();
-                        GenerateTransaction(accountId,amount,2);
+                        GenerateTransaction(accountId, amount, 2);
                         return GetName(accountId);
                     }
                 }
@@ -623,12 +735,241 @@ namespace BankApp.Service
                     }
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return false;
             }
         }
 
+        public ConsoleTable GetTransactions(string accountId)
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetTransactions, accountId, accountId), conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                        ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = new[] { "TransactionId", "SendersAccountId", "RecieversAccountId", "Type", "Amount", "Time" }, EnableCount = false });
+                        while (reader.Read())
+                        {
+                            string type = "";
+                            switch (reader.GetValue(2))
+                            {
+                                case (int)TransactionType.Deposit:
+                                    type = "Deposit";
+                                    break;
+                                case (int)TransactionType.Transfer:
+                                    type = "Transfer";
+                                    break;
+                                case (int)TransactionType.Withdraw:
+                                    type = "Withdraw";
+                                    break;
+                            }
+                            table.AddRow(reader.GetValue(0), reader.GetValue(4), reader.GetValue(5), type, reader.GetValue(1), reader.GetValue(3));
+                        }
+                        return table;
+                    }
+                }
+            }
+            catch
+            {
+                return new ConsoleTable();
+            }
+            
+        }
 
+        public bool TransferAmountRTGS(string fromId, string toId, float amount)
+        {
+            float UpdatedAmount;
+            string fromBankId = GetBankId(fromId);
+
+            if (GetBalance(fromId) - amount < 0)
+            {
+                return false;
+            }
+            if (fromBankId == GetBankId(toId))
+            {
+                float temp = amount * (GetBanksRTGSCharges(fromBankId) / 100);
+                UpdatedAmount = amount - temp;
+            }
+            else
+            {
+                float temp = amount * (GetBankoRTGSCharges(fromBankId) / 100);
+                UpdatedAmount = amount - temp;
+            }
+
+            GenerateTransaction(fromId, toId, amount, 3);
+
+            UpdateBalance(fromId, GetBalance(fromId) - amount);
+            UpdateBalance(toId, GetBalance(toId) + UpdatedAmount);
+
+            UpdateBankProfits(fromBankId, GetBankProfits(fromBankId) + (amount - UpdatedAmount));
+            
+         return true;
+        }
+
+        public bool TransferAmountIMPS(string fromId, string toId, float amount)
+        {
+            float UpdatedAmount;
+            string fromBankId = GetBankId(fromId);
+
+            if (GetBalance(fromId) - amount < 0)
+            {
+                return false;
+            }
+            if (fromBankId == GetBankId(toId))
+            {
+                float temp = amount * (GetBanksIMPSCharges(fromBankId) / 100);
+                UpdatedAmount = amount - temp;
+            }
+            else
+            {
+                float temp = amount * (GetBankoIMPSCharges(fromBankId) / 100);
+                UpdatedAmount = amount - temp;
+            }
+
+            GenerateTransaction(fromId, toId, amount, 3);
+
+            UpdateBalance(fromId, GetBalance(fromId) - amount);
+            UpdateBalance(toId, GetBalance(toId) + UpdatedAmount);
+
+            UpdateBankProfits(fromBankId, GetBankProfits(fromBankId) + (amount - UpdatedAmount));
+
+            return true;
+        }
+
+        public float GetTransactionAmount(string transcationsId)
+        {
+
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetTransactionAmount, transcationsId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetString(0);
+                    }
+
+                    return float.Parse(temp);
+                }
+            }
+        }
+
+        public int GetTransactionType(string transcationsId)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetTransactionType, transcationsId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetString(0);
+                    }
+
+                    return int.Parse(temp);
+                }
+            }
+        }
+
+        public string GetTransactionSenderId(string transactionId)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetTransactionSenderId, transactionId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetString(0);
+                    }
+
+                    return temp;
+                }
+            }
+        }
+        public string GetTransactionReceiverId(string transactionId)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.GetTransactionReceiverId, transactionId), conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetString(0);
+                    }
+
+                    return temp;
+                }
+            }
+        }
+
+
+        public bool RevertTransaction(string transactionId)
+        {
+            try
+            {
+                float transactionAmount = GetTransactionAmount(transactionId);
+                string receiversId = GetTransactionReceiverId(transactionId);
+                float receiversBalance = GetBalance(receiversId);
+
+                switch (GetTransactionType(transactionId))
+                {
+                    case (int)TransactionType.Deposit:
+                        if(receiversBalance - transactionAmount >= 0)
+                        {
+                            float newBalance = receiversBalance - transactionAmount;
+                            UpdateBalance(receiversId, newBalance);
+                        }
+                        else 
+                        { 
+                            return false;
+                        }
+                        break;
+
+                    case (int)TransactionType.Withdraw:
+                        UpdateBalance(receiversId, receiversBalance + transactionAmount);
+                        break;
+
+                    case (int)TransactionType.Transfer:
+                        string sendersId = GetTransactionSenderId(transactionId);
+                        
+                        float newBal = receiversBalance - transactionAmount;
+                        UpdateBalance(receiversId, newBal);
+
+                        float sendersBalance = GetBalance(sendersId);
+                        UpdateBalance(sendersId, sendersBalance + transactionAmount);
+                        break;
+
+                }
+
+
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.DeleteTransaction, transactionId), conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
