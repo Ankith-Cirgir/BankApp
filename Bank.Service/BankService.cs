@@ -14,8 +14,8 @@ namespace BankApp.Service
 
         public void init() {
             sqlHandler = new SQLHandler();
-            Console.Write(sqlHandler.init());
-            Console.ReadLine();
+            sqlHandler.init();
+
             sqlHandler.AddCurrency("INR",1,"Mon09112021");
         }
 
