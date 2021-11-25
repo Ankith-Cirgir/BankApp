@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BankApp.Service;
 using ConsoleTables;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankApp.CLI
 {

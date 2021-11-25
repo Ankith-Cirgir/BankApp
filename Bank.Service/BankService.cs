@@ -11,28 +11,72 @@ namespace BankApp.Service
     public class BankService
     {
         private SQLHandler sqlHandler;
+        MyDbContext dbContext;
 
         public void init() {
-            sqlHandler = new SQLHandler();
-            sqlHandler.init();
 
-            sqlHandler.AddCurrency("INR",1,"Mon09112021");
+            dbContext = new MyDbContext();
+
+            var customerAccounts = dbContext.StaffAccounts.ToList();
+
+            Console.WriteLine(customerAccounts.Count());
+            Console.ReadLine();
+
+            AddBank("HDFC",0,5,2,6);
+
+
+            //sqlHandler = new SQLHandler();
+            //sqlHandler.init();
+
+            //sqlHandler.AddCurrency("INR",1,"Mon09112021");
         }
 
 
         public string AddBank(string name, float sRTGS, float sIMPS, float oRTGS, float oIMPS)
         {
-            return sqlHandler.AddBank(name, sRTGS, sIMPS, oRTGS, oIMPS);
+            var bank = new Bank
+            {
+                BankId = $"{name.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyy")}",
+                BankName = name,
+                sRTGSCharge = sRTGS,
+                sIMPSCharge = sIMPS,
+                oRTGSCharge = oRTGS,
+                oIMPSCharge = oIMPS
+            };
+            dbContext.Add(bank);
+            dbContext.SaveChanges();
+            return bank.BankId;
         }
 
         public string AddBank(string name)
         {
-            return sqlHandler.AddBank(name);
+            var bank = new Bank
+            {
+                BankId = $"{name.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyy")}",
+                BankName = name,
+                sRTGSCharge = 0,
+                sIMPSCharge = 5,
+                oRTGSCharge = 2,
+                oIMPSCharge = 6
+            };
+            dbContext.Add(bank);
+            dbContext.SaveChanges();
+            return bank.BankId;
         }
 
         public string CreateCustomerAccount(string name, string pass,string bankId)
         {
-            return sqlHandler.CreateCustomerAccount(name, pass, bankId);
+            var customer = new CustomerAccount
+            {
+                AccountId = $"{name.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyyHHmmss")}",
+                Name = name,
+                Password = pass,
+                BankId = bankId,
+                Balance = 0
+            };
+            dbContext.Add(customer);
+            dbContext.SaveChanges();
+            return customer.AccountId;
         }
 
         public string CreateStaffAccount(string name, string pass, string bankId)
