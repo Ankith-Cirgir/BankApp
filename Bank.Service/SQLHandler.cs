@@ -897,6 +897,7 @@ namespace BankApp.Service
                 }
             }
         }
+
         public string GetTransactionReceiverId(string transactionId)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -915,7 +916,6 @@ namespace BankApp.Service
                 }
             }
         }
-
 
         public bool RevertTransaction(string transactionId)
         {
