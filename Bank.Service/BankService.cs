@@ -21,13 +21,6 @@ namespace BankApp.Service
         public void init() {
 
             dbContext = new MyDbContext();
-
-            var customerAccounts = dbContext.StaffAccounts.ToList();
-
-            Console.WriteLine(customerAccounts.Count());
-            Console.ReadLine();
-
-            AddBank("HDFC",0,5,2,6);
         }
 
 
