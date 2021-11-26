@@ -10,13 +10,13 @@ namespace BankApp.Service
 {
     public class BankService
     {
-        private SQLHandler sqlHandler;
+
         MyDbContext dbContext;
+
         public string GetDateTimeNow(bool forId)
         {
             return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
-
 
         public void init() {
 
@@ -146,7 +146,7 @@ namespace BankApp.Service
             var customer = dbContext.CustomerAccounts.Find(accountId);
             dbContext.Remove(customer);
             dbContext.SaveChanges();
-            return sqlHandler.DeleteCustomerAccount(accountId);
+            return true;
         }
 
         public string GetName(string accountId)
@@ -295,7 +295,6 @@ namespace BankApp.Service
             dbContext.SaveChanges();
         }
 
-        
         public bool RevertTransaction(string transactionId) 
         {
             var transaction = dbContext.Transaction.Find(transactionId);
