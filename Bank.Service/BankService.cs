@@ -289,10 +289,56 @@ namespace BankApp.Service
             return bank.Profits;
         }
 
+        public void DeleteTransaction(string TransactionId)
+        {
+            dbContext.Remove(dbContext.Transaction.Find(TransactionId));
+            dbContext.SaveChanges();
+        }
+
         
         public bool RevertTransaction(string transactionId) 
         {
-            return sqlHandler.RevertTransaction(transactionId);
+            var transaction = dbContext.Transaction.Find(transactionId);
+            string senderId = transaction.SenderId;
+            string receiverId = transaction.ReceiverId;
+            var receiverCustomer = dbContext.CustomerAccounts.Find(receiverId);
+            float amount = transaction.Amount;
+            switch(transaction.Type)
+            {
+                case (int)Transaction.TransactionType.Withdraw:
+                    receiverCustomer.Balance += amount;
+                    dbContext.SaveChanges();
+                    DeleteTransaction(transactionId);
+                    return true;
+
+                case (int)Transaction.TransactionType.Deposit:
+                    if (receiverCustomer.Balance - amount >= 0)
+                    {
+                        receiverCustomer.Balance -= amount;
+                        dbContext.SaveChanges();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                case (int)Transaction.TransactionType.Transfer:
+                    var senderCustomer = dbContext.CustomerAccounts.Find(senderId);
+                    if(receiverCustomer.Balance - amount >= 0)
+                    {
+                        senderCustomer.Balance += amount;
+                        receiverCustomer.Balance -= amount;
+                        dbContext.SaveChanges();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+            }
+            return false;
         } 
 
         public bool AddCurrency(string name, float value, string bankId)
