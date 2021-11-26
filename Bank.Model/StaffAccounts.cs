@@ -19,6 +19,8 @@ namespace BankApp.Model
         [MaxLength(45)]
         public string Password { get; set; }
 
+        public string BankId { get; set; }
+
         /*
         public StaffAccounts(string accountId, string name, string password)
         {

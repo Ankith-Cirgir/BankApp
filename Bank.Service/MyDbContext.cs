@@ -12,7 +12,7 @@ namespace BankApp.Service
     {
         public DbSet<Bank> Banks { get; set; }
 
-        public DbSet<Bank> Currency { get; set; }
+        public DbSet<Currency> Currency { get; set; }
 
         public DbSet<CustomerAccount> CustomerAccounts { get; set; }
 

@@ -12,6 +12,11 @@ namespace BankApp.Service
     {
         private SQLHandler sqlHandler;
         MyDbContext dbContext;
+        public string GetDateTimeNow(bool forId)
+        {
+            return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        }
+
 
         public void init() {
 
@@ -23,12 +28,6 @@ namespace BankApp.Service
             Console.ReadLine();
 
             AddBank("HDFC",0,5,2,6);
-
-
-            //sqlHandler = new SQLHandler();
-            //sqlHandler.init();
-
-            //sqlHandler.AddCurrency("INR",1,"Mon09112021");
         }
 
 
@@ -68,7 +67,7 @@ namespace BankApp.Service
         {
             var customer = new CustomerAccount
             {
-                AccountId = $"{name.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyyHHmmss")}",
+                AccountId = $"{name.Substring(0, 3)}{GetDateTimeNow(true)}",
                 Name = name,
                 Password = pass,
                 BankId = bankId,
@@ -81,52 +80,90 @@ namespace BankApp.Service
 
         public string CreateStaffAccount(string name, string pass, string bankId)
         {
-            return sqlHandler.CreateStaffAccount(name, pass, bankId);
+            var staffAccounts= new StaffAccounts
+            {
+                AccountId = $"{name.Substring(0, 3)}{GetDateTimeNow(true)}",
+                Name = name,
+                Password = pass,
+                BankId = bankId
+            };
+            dbContext.Add(staffAccounts);
+            dbContext.SaveChanges();
+            return staffAccounts.AccountId;
         }
 
         public string DepositAmount(string accountId,float amount, string _currencyName)
         {
-            return sqlHandler.DepositAmount(accountId,amount,_currencyName);
+            var customer = dbContext.CustomerAccounts.Find(accountId);
+            float currentBalance = customer.Balance;
+            customer.Balance = currentBalance + amount;
+            dbContext.SaveChanges();
+            return customer.Name;
         }
 
         public bool WithdrawAmount(string accountId, float amount)
         {
-            return sqlHandler.WithdrawAmount(accountId, amount);
+            var customer = dbContext.CustomerAccounts.Find(accountId);
+            float currentBalance = customer.Balance;
+            if(currentBalance-amount >= 0)
+            {
+                customer.Balance = currentBalance - amount;
+                dbContext.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }            
         }
 
         public bool AuthenticateCustomer(string accountId,string pass)
         {
-            return sqlHandler.AuthenticateCustomer(accountId, pass);
+            var customer = dbContext.CustomerAccounts.Find(accountId);
+            return customer.Password == pass ? true : false;
         }
 
         public bool AuthenticateStaff(string accountId, string pass)
         {
-            return sqlHandler.Authenticatestaff(accountId,pass);
+            var staff = dbContext.StaffAccounts.Find(accountId);
+            return staff.Password == pass ? true : false;
         }
 
         public string UpdateCustomerName(string accountId,string newName)
         {
-            return sqlHandler.UpdateCustomerName(accountId, newName);
+
+            var customer = dbContext.CustomerAccounts.Find(accountId);
+            customer.Name = newName;
+            dbContext.SaveChanges();
+            return newName;
         }
 
         public string UpdateCustomerPassword(string accountId, string newPassword)
         {
-            return sqlHandler.UpdateCustomerPassword(accountId, newPassword);
+            var customer = dbContext.CustomerAccounts.Find(accountId);
+            customer.Password = newPassword;
+            dbContext.SaveChanges();
+            return newPassword;
         }
 
         public bool DeleteCustomerAccount(string accountId)
         {
+            var customer = dbContext.CustomerAccounts.Find(accountId);
+            dbContext.Remove(customer);
+            dbContext.SaveChanges();
             return sqlHandler.DeleteCustomerAccount(accountId);
         }
 
         public string GetName(string accountId)
         {
-            return sqlHandler.GetName(accountId);
+            var customer = dbContext.CustomerAccounts.Find(accountId);
+            return customer.Name;
         }
 
         public float GetBalance(string accountId)
         {
-            return sqlHandler.GetBalance(accountId);
+            var customer = dbContext.CustomerAccounts.Find(accountId);
+            return customer.Balance;
         }
 
         
@@ -147,27 +184,40 @@ namespace BankApp.Service
 
         public float UpdatesRTGS(float val, string bankId)
         {
-            return sqlHandler.UpdatesRTGS(val,bankId);
+            var bank = dbContext.Banks.Find(bankId);
+            bank.sRTGSCharge = val;
+            dbContext.SaveChanges();
+            return val;
         }
 
         public float UpdatesIMPS(float val, string bankId)
         {
-            return sqlHandler.UpdatesIMPS(val, bankId);
+            var bank = dbContext.Banks.Find(bankId);
+            bank.sIMPSCharge = val;
+            dbContext.SaveChanges();
+            return val;
         }
 
         public float UpdateoRTGS(float val, string bankId)
         {
-            return sqlHandler.UpdateoRTGS(val, bankId);
+            var bank = dbContext.Banks.Find(bankId);
+            bank.oRTGSCharge = val;
+            dbContext.SaveChanges();
+            return val;
         }
 
         public float UpdateoIMPS(float val, string bankId)
         {
-            return sqlHandler.UpdateoIMPS(val, bankId);
+            var bank = dbContext.Banks.Find(bankId);
+            bank.oIMPSCharge = val;
+            dbContext.SaveChanges();
+            return val;
         }
 
         public float GetBankProfits(string bankId)
         {
-            return sqlHandler.GetBankProfits(bankId);
+            var bank = dbContext.Banks.Find(bankId);
+            return bank.Profits;
         }
 
         
@@ -178,7 +228,15 @@ namespace BankApp.Service
 
         public bool AddCurrency(string name, float value, string bankId)
         {
-            return sqlHandler.AddCurrency(name, value, bankId);
+            var currency = new Currency
+            {
+                currency = name,
+                value = value,
+                BankId = bankId
+            };
+            dbContext.Currency.Add(currency);
+            dbContext.SaveChanges();
+            return true;
         }
 
     }
