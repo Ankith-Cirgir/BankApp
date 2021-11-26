@@ -229,7 +229,26 @@ namespace BankApp.Service
 
         public ConsoleTable GetTransactions(string accountId)
         {
-            return sqlHandler.GetTransactions(accountId);
+            ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = new[] { "TransactionId", "SendersAccountId", "RecieversAccountId", "Type", "Amount", "Time" }, EnableCount = false });
+            var transactions = dbContext.Transaction.Where(e => e.ReceiverId == accountId || e.ReceiverId == accountId);
+            foreach (Transaction transaction in transactions){
+                string type = "";
+                switch (transaction.Type)
+                {
+                    case (int)Transaction.TransactionType.Deposit:
+                        type = "Deposit";
+                        break;
+                    case (int)Transaction.TransactionType.Transfer:
+                        type = "Transfer";
+                        break;
+                    case (int)Transaction.TransactionType.Withdraw:
+                        type = "Withdraw";
+                        break;
+                }
+                table.AddRow(transaction.TransactionId, transaction.SenderId, transaction.ReceiverId, type, transaction.Amount, transaction.Time);
+            }
+            
+            return table;
         }
 
         public float UpdatesRTGS(float val, string bankId)
