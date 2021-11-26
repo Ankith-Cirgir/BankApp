@@ -91,6 +91,7 @@ namespace BankApp.Service
             float currentBalance = customer.Balance;
             customer.Balance = currentBalance + amount;
             dbContext.SaveChanges();
+            GenerateTransactions(accountId, amount, 2);
             return customer.Name;
         }
 
@@ -102,6 +103,7 @@ namespace BankApp.Service
             {
                 customer.Balance = currentBalance - amount;
                 dbContext.SaveChanges();
+                GenerateTransactions(accountId, amount, 1);
                 return true;
             }
             else
@@ -159,15 +161,70 @@ namespace BankApp.Service
             return customer.Balance;
         }
 
-        
+        public void GenerateTransactions(string fromId, string toId, float amount, int type)
+        {
+            var transaction = new Transaction
+            {
+                TransactionId = $"{dbContext.CustomerAccounts.Find(toId).BankId}{toId}{GetDateTimeNow(true)}",
+                Amount = amount,
+                Type = type,
+                SenderId = fromId,
+                ReceiverId = toId,
+                Time = GetDateTimeNow(false)
+            };
+            dbContext.Transaction.Add(transaction);
+            dbContext.SaveChanges();
+        }
+
+        public void GenerateTransactions(string toId, float amount, int type)
+        {
+            var transaction = new Transaction
+            {
+                TransactionId = $"{dbContext.CustomerAccounts.Find(toId).BankId}{toId}{GetDateTimeNow(true)}",
+                Amount = amount,
+                Type = type,
+                ReceiverId = toId,
+                Time = GetDateTimeNow(false)
+            };
+            dbContext.Transaction.Add(transaction);
+            dbContext.SaveChanges();
+        }
+
+
         public bool TransferAmountRTGS(string fromId, string toId, float amount)
         {
-            return sqlHandler.TransferAmountRTGS(fromId, toId, amount);
+            var fromCustomer = dbContext.CustomerAccounts.Find(fromId);
+            var toCustomer = dbContext.CustomerAccounts.Find(toId);
+
+            if(fromCustomer.Balance - amount >= 0)
+            {
+                float fromBalance = fromCustomer.Balance;
+                fromCustomer.Balance = fromBalance - amount;
+                float toBalance = toCustomer.Balance;
+                _ = toCustomer.BankId == fromCustomer.BankId ? toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(toCustomer.BankId).sRTGSCharge): toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(fromCustomer.BankId).oRTGSCharge);
+                GenerateTransactions(fromId,toId,amount,3);
+                dbContext.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public bool TransferAmountIMPS(string fromId, string toId, float amount)
         {
-            return sqlHandler.TransferAmountIMPS(fromId, toId, amount);
+            var fromCustomer = dbContext.CustomerAccounts.Find(fromId);
+            var toCustomer = dbContext.CustomerAccounts.Find(toId);
+
+            if (fromCustomer.Balance - amount >= 0)
+            {
+                float fromBalance = fromCustomer.Balance;
+                fromCustomer.Balance = fromBalance - amount;
+                float toBalance = toCustomer.Balance;
+                _ = toCustomer.BankId == fromCustomer.BankId ? toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(toCustomer.BankId).sIMPSCharge) : toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(fromCustomer.BankId).oIMPSCharge);
+                GenerateTransactions(fromId, toId, amount, 3);
+                dbContext.SaveChanges();
+                return true;
+            }
+            return false;
         } 
 
         public ConsoleTable GetTransactions(string accountId)

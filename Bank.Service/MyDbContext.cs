@@ -107,11 +107,6 @@ namespace BankApp.Service
                 entity.Property(d => d.BankId).IsRequired();
 
             });
-
-
-
-
-
         }
     }
 }
