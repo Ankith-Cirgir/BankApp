@@ -303,6 +303,7 @@ namespace BankApp.Service
             var receiverCustomer = dbContext.CustomerAccounts.Find(receiverId);
             float amount = transaction.Amount;
             switch(transaction.Type)
+
             {
                 case (int)Transaction.TransactionType.Withdraw:
                     receiverCustomer.Balance += amount;
@@ -320,6 +321,7 @@ namespace BankApp.Service
                     else
                     {
                         return false;
+
                     }
 
                 case (int)Transaction.TransactionType.Transfer:
@@ -333,6 +335,7 @@ namespace BankApp.Service
                     }
                     else
                     {
+
                         return false;
                     }
 

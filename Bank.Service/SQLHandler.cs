@@ -25,7 +25,6 @@ namespace BankApp.Service
             connStr = "server=localhost;user=root;database=bankapp;port=3306;password=admin";
             try
             {
-
                 CreateStaffAccount("admin", "admin", "admin", "Mon09112021");
 
                 using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -952,10 +951,7 @@ namespace BankApp.Service
                         float sendersBalance = GetBalance(sendersId);
                         UpdateBalance(sendersId, sendersBalance + transactionAmount);
                         break;
-
                 }
-
-
                 using (MySqlConnection conn = new MySqlConnection(connStr))
                 {
                     using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.DeleteTransaction, transactionId), conn))
