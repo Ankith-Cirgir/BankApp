@@ -15,18 +15,13 @@ namespace BankApp.Service
     {
         private string connStr;
 
-        public string GetDateTimeNow(bool forId)
-        {
-            return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-        }
-
         public string init()
         {
             connStr = "server=localhost;user=root;database=bankapp;port=3306;password=admin";
             try
             {
 
-                CreateStaffAccount("admin", "admin", "admin", "Mon09112021");
+                
 
                 using (MySqlConnection conn = new MySqlConnection(connStr))
                 {
@@ -62,7 +57,7 @@ namespace BankApp.Service
                     using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateBanksTable, conn))
                     {
                         cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader();
+                        MySqlDataReader reader = cmd.ExecuteReader(); // execuite non query // exceute scalar //  DataSet // SQL parameters
                     }
                 }
 
@@ -112,6 +107,101 @@ namespace BankApp.Service
             }
         }
 
+        public string GetDateTimeNow(bool forId)
+        {
+            return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+        }
+
+        public string ExecuteReader(string query)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Connection.Open();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    string temp = "";
+                    while (reader.Read())
+                    {
+                        temp += reader.GetString(0);
+                    }
+                    return temp;
+                }
+            }
+        }
+
+
+
+        public ConsoleTable ExecuteReader(string query,string[] columns, bool enableCount)
+        {
+            try
+            {
+                using (MySqlConnection conn = new MySqlConnection(connStr))
+                {
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Connection.Open();
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                        ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = columns, EnableCount = enableCount });
+                        while (reader.Read())
+                        {
+                            string type = "";
+                            switch (reader.GetValue(2))
+                            {
+                                case (int)TransactionType.Deposit:
+                                    type = "Deposit";
+                                    break;
+                                case (int)TransactionType.Transfer:
+                                    type = "Transfer";
+                                    break;
+                                case (int)TransactionType.Withdraw:
+                                    type = "Withdraw";
+                                    break;
+                            }
+                            table.AddRow(reader.GetValue(0), reader.GetValue(4), reader.GetValue(5), type, reader.GetValue(1), reader.GetValue(3));
+                        }
+                        return table;
+                    }
+                }
+            }
+            catch
+            {
+                return new ConsoleTable();
+            }
+        }
+
+
+
+
+
+        public int ExecuiteNonQuery(string query)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Connection.Open();
+                    int effectedRows = cmd.ExecuteNonQuery();
+                    return effectedRows;
+                }
+            }
+        }
+
+        public object ExecuiteScaler(string query)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Connection.Open();
+                    var effectedRows = cmd.ExecuteScalar();
+                    return effectedRows;
+                }
+            }
+        }
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/*
         public string CreateCustomerAccount(string name, string password, string bankId)
         {
             string accountId = $"{name.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyyHHmmss")}";
@@ -357,7 +447,7 @@ namespace BankApp.Service
             {
                 using (MySqlConnection conn = new MySqlConnection(connStr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.AuthenticateCustomer, accountId), conn))
+                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.AuthenticateCustomer, accountId, password), conn))
                     {
                         cmd.Connection.Open();
                         MySqlDataReader reader = cmd.ExecuteReader();
@@ -383,7 +473,7 @@ namespace BankApp.Service
             {
                 using (MySqlConnection conn = new MySqlConnection(connStr))
                 {
-                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.AuthenticateStaff, accountId), conn))
+                    using (MySqlCommand cmd = new MySqlCommand(String.Format(SqlQueries.AuthenticateStaff, accountId, password), conn))
                     {
                         cmd.Connection.Open();
                         MySqlDataReader reader = cmd.ExecuteReader();
@@ -970,6 +1060,6 @@ namespace BankApp.Service
             {
                 return false;
             }
-        }
+        }*/
     }
 }
