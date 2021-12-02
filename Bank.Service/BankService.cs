@@ -396,21 +396,3 @@ namespace BankApp.Service
         }
     }
 }
-
-
-// SQL Parameter Problem
-/*
-  
-private String readCommand = "SELECT LEVEL FROM USERS WHERE VAL_1 = @param_val_1 AND VAL_2 = @param_val_2;";
-
-public bool read(string id)
-{
-    level = -1;
-    MySqlCommand m = new MySqlCommand(readCommand);
-    m.Parameters.AddWithValue("@param_val_1", val1);
-    m.Parameters.AddWithValue("@param_val_2", val2);
-    level = Convert.ToInt32(m.ExecuteScalar());
-    return true;
-}
-
- */
