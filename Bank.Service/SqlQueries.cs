@@ -37,7 +37,7 @@ namespace BankApp.Service
 
         public static string InsertIntoCustomersTable = "INSERT INTO `bankapp`.`customeraccounts`(`AccountId`,`BankId`,`Balance`,`Name`,`Password`)VALUES('{0}', '{1}', {2}, '{3}', '{4}');";
         public static string InsertIntoStaffsTable = "INSERT INTO `bankapp`.`staffaccounts`(`AccountId`,`BankId`,`Name`,`Password`)VALUES('{0}', '{1}', '{2}', '{3}');";
-        public static string InsertIntoBanksTable = "INSERT INTO `bankapp`.`banks`(`BankId`,`BankName`,`Profits`,`sRTGSCharge`,`sIMPSCharge`,`oRTGSCharge`,`oIMPSCharge`)VALUES('{0}', '{1}', {2}, {3}, {4}, {5}>, {6}); ";
+        public static string InsertIntoBanksTable = "INSERT INTO `bankapp`.`banks`(`BankId`,`BankName`,`Profits`,`sRTGSCharge`,`sIMPSCharge`,`oRTGSCharge`,`oIMPSCharge`)VALUES('@BankId', '@BankName', @Profits, @sRTGSCharge, @sIMPSCharge, @oRTGSCharge, @oIMPSCharge); ";
         public static string AddCurrency = "INSERT INTO `bankapp`.`currency` (`currency`, `BankId`, `value`) VALUES ('{0}', '{1}', {2});";
         public static string InsertTransactionReceiver = "INSERT INTO `bankapp`.`transactions` (`TransactionId`, `Amount`, `Type`, `Time`, `ReceiverId`) VALUES ('{0}', {1}, {2}, '{3}', '{4}');";
         public static string InsertTransaction = "INSERT INTO `bankapp`.`transactions` (`TransactionId`, `Amount`, `Type`, `Time`, `SenderId`, `ReceiverId`) VALUES ('{0}', {1}, {2}, '{3}', '{4}', '{5}');";

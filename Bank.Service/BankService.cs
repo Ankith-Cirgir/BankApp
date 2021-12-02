@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BankApp.Model;
 using ConsoleTables;
+using MySql.Data.MySqlClient;
 
 namespace BankApp.Service
 {
@@ -238,6 +240,7 @@ namespace BankApp.Service
 
         public float UpdatesIMPS(float val, string bankId)
         {
+            
             sqlHandler.ExecuiteNonQuery(String.Format(SqlQueries.UpdatesIMPS, val, bankId));
             return val;
         }
@@ -284,6 +287,9 @@ namespace BankApp.Service
         {
             try
             {
+                MySqlParameter p = new MySqlParameter();
+                
+
                 sqlHandler.ExecuiteScaler(String.Format(SqlQueries.UpdateBankProfits, amount, bankId));
                 return true;
             }
@@ -390,3 +396,21 @@ namespace BankApp.Service
         }
     }
 }
+
+
+// SQL Parameter Problem
+/*
+  
+private String readCommand = "SELECT LEVEL FROM USERS WHERE VAL_1 = @param_val_1 AND VAL_2 = @param_val_2;";
+
+public bool read(string id)
+{
+    level = -1;
+    MySqlCommand m = new MySqlCommand(readCommand);
+    m.Parameters.AddWithValue("@param_val_1", val1);
+    m.Parameters.AddWithValue("@param_val_2", val2);
+    level = Convert.ToInt32(m.ExecuteScalar());
+    return true;
+}
+
+ */
