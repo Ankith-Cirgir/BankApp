@@ -17,7 +17,8 @@ namespace BankApp.CLI
             while (!exit)
             {
                 ClearScreen();
-                try {
+                try
+                {
                     MainMenu mainMenu = (MainMenu)Enum.Parse(typeof(MainMenu), GetString(Messages.WelcomeMenu));
                     switch (mainMenu)
                     {
@@ -108,7 +109,7 @@ namespace BankApp.CLI
                                             case StaffLoginMenu.UpdatesRTGS:
                                                 string bankId = GetString("Enter Bank Id:");
                                                 float newsRTGS = GetNumber("Enter New sRTGS value: ");
-                                                float temp = bankService.UpdatesRTGS(newsRTGS,bankId);
+                                                float temp = bankService.UpdatesRTGS(newsRTGS, bankId);
                                                 print($"sRTGS updated to {temp}");
                                                 Console.ReadLine();
                                                 break;
@@ -203,7 +204,7 @@ namespace BankApp.CLI
                                                 Console.ReadLine();
                                                 break;
                                             case CustomerLoginMenu.Withdraw:
-                                                float withdrawAmount = GetNumber(Messages.AskWithdrawAmount); 
+                                                float withdrawAmount = GetNumber(Messages.AskWithdrawAmount);
 
                                                 bool check = bankService.WithdrawAmount(loginId, withdrawAmount);
                                                 ClearScreen();
@@ -237,13 +238,13 @@ namespace BankApp.CLI
                             break;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     ClearScreen();
                     println("Error Occured");
                     Console.ReadLine();
                 }
-                
+
             }
         }
     }

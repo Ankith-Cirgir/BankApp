@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using System.Globalization;
 using ConsoleTables;
 using static BankApp.Model.Transaction;
+using System.Data;
 
 namespace BankApp.Service
 {
@@ -105,12 +106,7 @@ namespace BankApp.Service
             }
         }
 
-        public string GetDateTimeNow(bool forId)
-        {
-            return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-        }
-
-        public string ExecuiteReader(string query, List<MySqlParameter> collection)
+        public string ExecuteReader(string query, List<MySqlParameter> collection)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
@@ -167,19 +163,6 @@ namespace BankApp.Service
             }
         }
 
-        public int ExecuiteNonQuery(string query)
-        {
-            using (MySqlConnection conn = new MySqlConnection(connStr))
-            {
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Connection.Open();
-                    int effectedRows = cmd.ExecuteNonQuery();
-                    return effectedRows;
-                }
-            }
-        }
-
         public int ExecuiteNonQuery(string query, List<MySqlParameter> collection)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
@@ -194,27 +177,16 @@ namespace BankApp.Service
             }
         }
 
-        public object ExecuiteScaler(string query)
-        {
-            using (MySqlConnection conn = new MySqlConnection(connStr))
-            {
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Connection.Open();
-                    var value = cmd.ExecuteScalar();
-                    return value;
-                }
-            }
-        }
-
         public object ExecuiteScaler(string query, List<MySqlParameter> collection)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
+                { 
                     cmd.Parameters.AddRange(collection.ToArray());
+
                     cmd.Connection.Open();
+
                     var value = cmd.ExecuteScalar();
                     return value;
                 }
