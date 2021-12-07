@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -17,10 +18,10 @@ namespace BankApp.Service
         public void init()
         {
             sqlHandler = new SQLHandler();
-            sqlHandler.init();
-
-            //CreateStaffAccount("admin", "admin", "Mon09112021");
-            AddCurrency("INR", 1, "Mon09112021");
+            if(sqlHandler.init() == "Succesfully created all tables!!") 
+            {
+                CreateStaffAccount("admin", "admin", "Mon09112021");
+            }
         }
 
         public string GetDateTimeNow(bool forId)
@@ -237,7 +238,6 @@ namespace BankApp.Service
             return float.Parse(sqlHandler.ExecuiteScaler(SqlQueries.GetBalance, parameterList).ToString());
         }
 
-
         public bool TransferAmountRTGS(string fromId, string toId, float amount)
         {
             float UpdatedAmount;
@@ -304,7 +304,26 @@ namespace BankApp.Service
                 parameterList.Add(new MySqlParameter("@ReceiverId", accountId));
                 parameterList.Add(new MySqlParameter("@SenderId", accountId));
 
-                ConsoleTable table = sqlHandler.ExecuteReader(SqlQueries.GetTransactions, parameterList, new[] { "TransactionId", "SendersAccountId", "RecieversAccountId", "Type", "Amount", "Time" }, false);
+                DataTable dt = sqlHandler.ExecuteReader(SqlQueries.GetTransactions, parameterList);
+                ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = new[] { "TransactionId", "SendersAccountId", "RecieversAccountId", "Type", "Amount", "Time" }, EnableCount = false });
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    string type = "";
+                    switch (dr["Type"])
+                    {
+                        case (int)Transaction.TransactionType.Deposit:
+                            type = "Deposit";
+                            break;
+                        case (int)Transaction.TransactionType.Transfer:
+                            type = "Transfer";
+                            break;
+                        case (int)Transaction.TransactionType.Withdraw:
+                            type = "Withdraw";
+                            break;
+                    }
+                    table.AddRow(dr["TransactionId"], dr["SenderId"], dr["ReceiverId"], type, dr["Amount"], dr["Time"]);
+                }
                 return table;
             }
             catch

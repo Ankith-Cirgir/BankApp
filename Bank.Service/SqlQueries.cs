@@ -8,7 +8,7 @@ namespace BankApp.Service
 {
     class SqlQueries
     {
-        public static string CheckTabelsExist = "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'bankapp' AND table_name = 'banks' LIMIT 1;";
+        public static string CheckTabelsExist = "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'bankapp' AND table_name = 'currency' LIMIT 1;";
 
 
         public static string CreateDatabase = "CREATE DATABASE bankapp;";

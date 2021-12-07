@@ -22,24 +22,14 @@ namespace BankApp.Service
             try
             {
 
-                using (MySqlConnection conn = new MySqlConnection(connStr))
+                int temp = int.Parse((String)ExecuiteScaler(SqlQueries.CheckTabelsExist, new List<MySqlParameter>()));
+                
+                if (temp != 1)
                 {
-                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CheckTabelsExist, conn))
-                    {
-                        cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                        string temp = "";
-                        while (reader.Read())
-                        {
-                            temp += reader.GetString(0);
-                        }
-                        if (temp != "1" || temp == null)
-                        {
-                            return CreateTables();
-                        }
-                        return "Tables already exist !!";
-                    }
+                    return CreateTables();
                 }
+
+                return "Tables already exist !!";
             }
             catch (Exception e)
             {
@@ -51,134 +41,53 @@ namespace BankApp.Service
         {
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(connStr))
-                {
-                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateBanksTable, conn))
-                    {
-                        cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader(); // execuite non query // exceute scalar //  DataSet // SQL parameters
-                    }
-                }
+                List<MySqlParameter> Z = new List<MySqlParameter>();
 
-                using (MySqlConnection conn = new MySqlConnection(connStr))
-                {
-                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateCustomerAccountsTable, conn))
-                    {
-                        cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                    }
-
-                }
-                using (MySqlConnection conn = new MySqlConnection(connStr))
-                {
-                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateStaffAccountsTable, conn))
-                    {
-                        cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                    }
-
-                }
-                using (MySqlConnection conn = new MySqlConnection(connStr))
-                {
-                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateTransactionsTable, conn))
-                    {
-                        cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                    }
-
-                }
-
-                using (MySqlConnection conn = new MySqlConnection(connStr))
-                {
-                    using (MySqlCommand cmd = new MySqlCommand(SqlQueries.CreateCurrencyTable, conn))
-                    {
-                        cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                    }
-
-                }
+                ExecuiteNonQuery(SqlQueries.CreateBanksTable, Z);
+                ExecuiteNonQuery(SqlQueries.CreateCustomerAccountsTable, Z);
+                ExecuiteNonQuery(SqlQueries.CreateStaffAccountsTable, Z);
+                ExecuiteNonQuery(SqlQueries.CreateTransactionsTable, Z);
+                ExecuiteNonQuery(SqlQueries.CreateCurrencyTable, Z);
 
                 return "Succesfully created all tables !!";
             }
             catch (Exception e)
             {
-                return "SQL ERROR: " + e.ToString();
+                return $"SQL ERROR: {e.ToString()}";
             }
         }
 
-        public string ExecuteReader(string query, List<MySqlParameter> collection)
+        public DataTable ExecuteReader(string query, List<MySqlParameter> sqlParameters)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connStr))
+            {
+                using (MySqlDataAdapter adr = new MySqlDataAdapter())
+                {
+                    try
+                    {
+                        adr.SelectCommand = new MySqlCommand(query, conn);
+                        adr.SelectCommand.Parameters.AddRange(sqlParameters.ToArray());
+
+                        DataTable dt = new DataTable();
+                        adr.Fill(dt);
+
+                        return dt;
+                    }
+                    catch(Exception e) {
+                        return new DataTable();
+                    }
+                    
+                }
+            }
+        }
+
+        public int ExecuiteNonQuery(string query, List<MySqlParameter> sqlParameters)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddRange(collection.ToArray());
-                    cmd.Connection.Open();
-                    MySqlDataReader reader = cmd.ExecuteReader();
-                    string temp = "";
-                    while (reader.Read())
-                    {
-                        temp += reader.GetString(0);
-                    }
-                    return temp;
-                }
-            }
-        }
-
-        public ConsoleTable ExecuteReader(string query, List<MySqlParameter> parameterList, string[] columns, bool enableCount)
-        {
-            try
-            {
-                using (MySqlConnection conn = new MySqlConnection(connStr))
-                {
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddRange(parameterList.ToArray());
-                        cmd.Connection.Open();
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                        ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = columns, EnableCount = enableCount });
-                        try
-                        {
-                            while (reader.Read())
-                            {
-                                string type = "";
-                                switch (reader.GetValue(2))
-                                {
-                                    case (int)TransactionType.Deposit:
-                                        type = "Deposit";
-                                        break;
-                                    case (int)TransactionType.Transfer:
-                                        type = "Transfer";
-                                        break;
-                                    case (int)TransactionType.Withdraw:
-                                        type = "Withdraw";
-                                        break;
-                                }
-                                table.AddRow(reader.GetValue(0), reader.GetValue(4), reader.GetValue(5), type, reader.GetValue(1), reader.GetValue(3));
-                            }
-
-                        }
-                        catch(Exception ex)
-                        {
-                            return table;
-                        }
-                        return table;
-                    }
-                }
-            }
-            catch
-            {
-                return new ConsoleTable();
-            }
-        }
-
-        public int ExecuiteNonQuery(string query, List<MySqlParameter> collection)
-        {
-            using (MySqlConnection conn = new MySqlConnection(connStr))
-            {
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddRange(collection.ToArray());
+                    cmd.Parameters.AddRange(sqlParameters.ToArray());
                     cmd.Connection.Open();
                     var effectedRows = cmd.ExecuteNonQuery();
                     return effectedRows;
@@ -186,13 +95,13 @@ namespace BankApp.Service
             }
         }
 
-        public object ExecuiteScaler(string query, List<MySqlParameter> collection)
+        public object ExecuiteScaler(string query, List<MySqlParameter> sqlParameters)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 { 
-                    cmd.Parameters.AddRange(collection.ToArray());
+                    cmd.Parameters.AddRange(sqlParameters.ToArray());
 
                     cmd.Connection.Open();
 
