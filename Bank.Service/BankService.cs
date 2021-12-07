@@ -300,7 +300,11 @@ namespace BankApp.Service
         {
             try
             {
-                ConsoleTable table = sqlHandler.ExecuteReader(String.Format(SqlQueries.GetTransactions, accountId, accountId), new[] { "TransactionId", "SendersAccountId", "RecieversAccountId", "Type", "Amount", "Time" }, false);
+                List<MySqlParameter> parameterList = new List<MySqlParameter>();
+                parameterList.Add(new MySqlParameter("@ReceiverId", accountId));
+                parameterList.Add(new MySqlParameter("@SenderId", accountId));
+
+                ConsoleTable table = sqlHandler.ExecuteReader(SqlQueries.GetTransactions, parameterList, new[] { "TransactionId", "SendersAccountId", "RecieversAccountId", "Type", "Amount", "Time" }, false);
                 return table;
             }
             catch

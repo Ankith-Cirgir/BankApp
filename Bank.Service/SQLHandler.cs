@@ -125,7 +125,7 @@ namespace BankApp.Service
             }
         }
 
-        public ConsoleTable ExecuteReader(string query, string[] columns, bool enableCount)
+        public ConsoleTable ExecuteReader(string query, List<MySqlParameter> parameterList, string[] columns, bool enableCount)
         {
             try
             {
@@ -133,25 +133,34 @@ namespace BankApp.Service
                 {
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
                     {
+                        cmd.Parameters.AddRange(parameterList.ToArray());
                         cmd.Connection.Open();
                         MySqlDataReader reader = cmd.ExecuteReader();
                         ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = columns, EnableCount = enableCount });
-                        while (reader.Read())
+                        try
                         {
-                            string type = "";
-                            switch (reader.GetValue(2))
+                            while (reader.Read())
                             {
-                                case (int)TransactionType.Deposit:
-                                    type = "Deposit";
-                                    break;
-                                case (int)TransactionType.Transfer:
-                                    type = "Transfer";
-                                    break;
-                                case (int)TransactionType.Withdraw:
-                                    type = "Withdraw";
-                                    break;
+                                string type = "";
+                                switch (reader.GetValue(2))
+                                {
+                                    case (int)TransactionType.Deposit:
+                                        type = "Deposit";
+                                        break;
+                                    case (int)TransactionType.Transfer:
+                                        type = "Transfer";
+                                        break;
+                                    case (int)TransactionType.Withdraw:
+                                        type = "Withdraw";
+                                        break;
+                                }
+                                table.AddRow(reader.GetValue(0), reader.GetValue(4), reader.GetValue(5), type, reader.GetValue(1), reader.GetValue(3));
                             }
-                            table.AddRow(reader.GetValue(0), reader.GetValue(4), reader.GetValue(5), type, reader.GetValue(1), reader.GetValue(3));
+
+                        }
+                        catch(Exception ex)
+                        {
+                            return table;
                         }
                         return table;
                     }
