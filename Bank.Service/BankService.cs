@@ -106,7 +106,7 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@Amount", amount));
             parameterList.Add(new MySqlParameter("@Type", type));
             parameterList.Add(new MySqlParameter("@Time", GetDateTimeNow(false)));
-            parameterList.Add(new MySqlParameter("@ReceiverId", receiverId));
+            parameterList.Add(new MySqlParameter("@ReceiversId", receiverId));
 
             sqlHandler.ExecuiteNonQuery(SqlQueries.InsertTransactionReceiver, parameterList);
 
