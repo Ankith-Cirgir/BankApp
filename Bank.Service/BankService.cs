@@ -15,16 +15,12 @@ namespace BankApp.Service
     {
         private SQLHandler sqlHandler;
 
-        public void init()
+        public BankService()
         {
             sqlHandler = new SQLHandler();
-            if(sqlHandler.init() == "Succesfully created all tables!!") 
-            {
-                CreateStaffAccount("admin", "admin", "Mon09112021");
-            }
         }
 
-        public string GetDateTimeNow(bool forId)
+        public static string GetDateTimeNow(bool forId)
         {
             return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
@@ -40,7 +36,7 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@oRTGSCharge", oRTGS));
             parameterList.Add(new MySqlParameter("@oIMPSCharge", oIMPS));
             parameterList.Add(new MySqlParameter("@Profits", 0));
-            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertIntoBanksTable, parameterList);
+            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertIntoBanksTable, sqlParameters: parameterList);
             return bankId;
         }
 
@@ -55,7 +51,7 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@oRTGSCharge", 2));
             parameterList.Add(new MySqlParameter("@oIMPSCharge", 6));
             parameterList.Add(new MySqlParameter("@Profits", 0)); 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertIntoBanksTable, parameterList);
+            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertIntoBanksTable, sqlParameters: parameterList);
 
             return bankId;
         }
@@ -71,7 +67,7 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@Name", name));
             parameterList.Add(new MySqlParameter("@Balance", 0));
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertIntoCustomersTable, parameterList);
+            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertIntoCustomersTable, sqlParameters: parameterList);
             return accountId;
         }
 
@@ -84,7 +80,7 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@Password", pass));
 
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertIntoStaffsTable, parameterList);
+            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertIntoStaffsTable, sqlParameters: parameterList);
             return accountId;
         }
 
@@ -94,7 +90,7 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@newBalance", newBalance));
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateBalance, parameterList);
+            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateBalance, sqlParameters: parameterList);
             return true;
         }
 
@@ -125,7 +121,7 @@ namespace BankApp.Service
 
 
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertTransaction, parameterList);
+            sqlHandler.ExecuiteNonQuery(SqlQueries.InsertTransaction, sqlParameters: parameterList);
         }
 
         public string DepositAmount(string accountId, float amount, string currencyName)
@@ -171,17 +167,26 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@Password", pass));
 
             var x = sqlHandler.ExecuiteScaler(SqlQueries.AuthenticateCustomer, parameterList);
-            return x.ToString() == "1";
+            return x != null && x.ToString() == accountId;
         }
 
         public bool AuthenticateStaff(string accountId, string pass)
         {
-            List<MySqlParameter> parameterList = new List<MySqlParameter>();
-            parameterList.Add(new MySqlParameter("@AccountId", accountId));
-            parameterList.Add(new MySqlParameter("@Password", pass));
+            try
+            {
+                List<MySqlParameter> parameterList = new List<MySqlParameter>();
+                parameterList.Add(new MySqlParameter("@AccountId", accountId));
+                parameterList.Add(new MySqlParameter("@Password", pass));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.AuthenticateStaff, parameterList);
-            return x.ToString() == "1";
+                var x = sqlHandler.ExecuiteScaler(SqlQueries.AuthenticateStaff, parameterList);
+
+                return x!= null && x.ToString() == accountId ;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+            
         }
 
         public string UpdateCustomerName(string accountId, string newName)
@@ -190,7 +195,7 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
             parameterList.Add(new MySqlParameter("@newName", newName));
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateName, parameterList);
+            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateName, sqlParameters: parameterList);
             return newName;
         }
 
@@ -202,7 +207,7 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@newName", newPassword));
 
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatePassword, parameterList);
+            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatePassword, sqlParameters: parameterList);
             return newPassword;
         }
 
@@ -213,7 +218,7 @@ namespace BankApp.Service
                 List<MySqlParameter> parameterList = new List<MySqlParameter>();
                 parameterList.Add(new MySqlParameter("@AccountId", accountId));
 
-                sqlHandler.ExecuiteNonQuery(SqlQueries.DeleteCustomerAccount, parameterList);
+                sqlHandler.ExecuiteNonQuery(SqlQueries.DeleteCustomerAccount, sqlParameters: parameterList);
                 return true;
             }
             catch
@@ -332,44 +337,44 @@ namespace BankApp.Service
             }
         }
 
-        public float UpdatesRTGS(float val, string bankId)
+        public float UpdatesRTGS(float currencyValue, string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
-            parameterList.Add(new MySqlParameter("@sRTGSCharge", val));
+            parameterList.Add(new MySqlParameter("@sRTGSCharge", currencyValue));
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesRTGS, parameterList);
-            return val;
+            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesRTGS, sqlParameters: parameterList);
+            return currencyValue;
         }
 
-        public float UpdatesIMPS(float val, string bankId)
+        public float UpdatesIMPS(float currencyValue, string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
-            parameterList.Add(new MySqlParameter("@sIMPSCharge", val));
+            parameterList.Add(new MySqlParameter("@sIMPSCharge", currencyValue));
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesIMPS, parameterList);
-            return val;
+            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesIMPS, sqlParameters: parameterList);
+            return currencyValue;
         }
 
-        public float UpdateoRTGS(float val, string bankId)
+        public float UpdateoRTGS(float currencyValue, string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
-            parameterList.Add(new MySqlParameter("@oRTGSCharge", val));
+            parameterList.Add(new MySqlParameter("@oRTGSCharge", currencyValue));
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoRTGS, parameterList);
-            return val;
+            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoRTGS, sqlParameters: parameterList);
+            return currencyValue;
         }
 
-        public float UpdateoIMPS(float val, string bankId)
+        public float UpdateoIMPS(float currencyValue, string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
-            parameterList.Add(new MySqlParameter("@oIMPSCharge", val));
+            parameterList.Add(new MySqlParameter("@oIMPSCharge", currencyValue));
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoIMPS, parameterList);
-            return val;
+            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoIMPS, sqlParameters: parameterList);
+            return currencyValue;
         }
 
         public float GetBanksRTGSCharges(string bankId)
@@ -377,7 +382,7 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            var x = sqlHandler.ExecuiteNonQuery(SqlQueries.GetBanksRTGSCharges, parameterList);
+            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBanksRTGSCharges, parameterList);
             return float.Parse(x.ToString());
         }
         public float GetBanksIMPSCharges(string bankId)
@@ -385,7 +390,7 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            var x = sqlHandler.ExecuiteNonQuery(SqlQueries.GetBanksRTGSCharges, parameterList);
+            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBanksIMPSCharges, parameterList);
             return float.Parse(x.ToString());
         }
         public float GetBankoRTGSCharges(string bankId)
@@ -393,7 +398,7 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            var x = sqlHandler.ExecuiteNonQuery(SqlQueries.GetBanksRTGSCharges, parameterList);
+            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBankoRTGSCharges, parameterList);
             return float.Parse(x.ToString());
         }
         public float GetBankoIMPSCharges(string bankId)
@@ -401,7 +406,7 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            var x = sqlHandler.ExecuiteNonQuery(SqlQueries.GetBanksRTGSCharges, parameterList);
+            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBankoIMPSCharges, parameterList);
             return float.Parse(x.ToString());
         }
 
@@ -421,7 +426,7 @@ namespace BankApp.Service
                 parameterList.Add(new MySqlParameter("@newProfits", amount));
                 parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-                sqlHandler.ExecuiteScaler(SqlQueries.UpdateBankProfits, parameterList);
+                sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateBankProfits, parameterList);
                 return true;
             }
             catch
@@ -447,7 +452,7 @@ namespace BankApp.Service
                 parameterList.Add(new MySqlParameter("@Currency", name));
                 parameterList.Add(new MySqlParameter("@Value", value));
 
-                sqlHandler.ExecuiteNonQuery(SqlQueries.AddCurrency, parameterList);
+                sqlHandler.ExecuiteNonQuery(SqlQueries.AddCurrency, sqlParameters: parameterList);
                 return true;
             }
             catch
@@ -505,7 +510,7 @@ namespace BankApp.Service
                 List<MySqlParameter> parameterList = new List<MySqlParameter>();
                 parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
 
-                sqlHandler.ExecuiteNonQuery(SqlQueries.DeleteTransaction, parameterList);
+                sqlHandler.ExecuiteNonQuery(SqlQueries.DeleteTransaction, sqlParameters: parameterList);
                 return true;
             }
             catch

@@ -57,7 +57,7 @@ namespace BankApp.Service
         public static string UpdateBankProfits = "UPDATE `bankapp`.`banks` SET `Profits` = @newProfits, WHERE `BankId` = @BankId;";
 
 
-        public static string AuthenticateCustomer = "SELECT EXISTS(SELECT 1 FROM `bankapp`.`customeraccounts` WHERE AccountId = @AccountId AND Password = @Password);";
-        public static string AuthenticateStaff = "SELECT EXISTS(SELECT 1 FROM `bankapp`.`staffaccounts` WHERE AccountId = @AccountId AND Password = @Password);";
+        public static string AuthenticateCustomer = "SELECT AccountId FROM `bankapp`.`customeraccounts` WHERE AccountId = @AccountId AND Password = @Password;";
+        public static string AuthenticateStaff = "SELECT AccountId FROM `bankapp`.`staffaccounts` WHERE AccountId = @AccountId AND Password = @Password;";
     }
 }

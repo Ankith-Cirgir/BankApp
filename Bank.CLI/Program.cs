@@ -12,7 +12,6 @@ namespace BankApp.CLI
             bool exit = false;
 
             BankService bankService = new BankService();
-            bankService.init();
 
             while (!exit)
             {
@@ -109,29 +108,29 @@ namespace BankApp.CLI
                                             case StaffLoginMenu.UpdatesRTGS:
                                                 string bankId = GetString("Enter Bank Id:");
                                                 float newsRTGS = GetNumber("Enter New sRTGS value: ");
-                                                float temp = bankService.UpdatesRTGS(newsRTGS, bankId);
-                                                print($"sRTGS updated to {temp}");
+                                                bankService.UpdatesRTGS(newsRTGS, bankId);
+                                                print($"sRTGS updated to {newsRTGS}");
                                                 Console.ReadLine();
                                                 break;
                                             case StaffLoginMenu.UpdatesIMPS:
                                                 bankId = GetString("Enter Bank Id:");
-                                                float newsIMPS = GetNumber("Enter New sRTGS value: ");
-                                                temp = bankService.UpdatesRTGS(newsIMPS, bankId);
-                                                print($"sRTGS updated to {temp}");
+                                                float newsIMPS = GetNumber("Enter New sIMPS value: ");
+                                                bankService.UpdatesIMPS(newsIMPS, bankId);
+                                                print($"sRTGS updated to {newsIMPS}");
                                                 Console.ReadLine();
                                                 break;
                                             case StaffLoginMenu.UpdateoRTGS:
                                                 bankId = GetString("Enter Bank Id:");
-                                                float newoRTGS = GetNumber("Enter New sRTGS value: ");
-                                                temp = bankService.UpdatesRTGS(newoRTGS, bankId);
-                                                print($"sRTGS updated to {temp}");
+                                                float newoRTGS = GetNumber("Enter New oRTGS value: ");
+                                                bankService.UpdateoRTGS(newoRTGS, bankId);
+                                                print($"sRTGS updated to {newoRTGS}");
                                                 Console.ReadLine();
                                                 break;
                                             case StaffLoginMenu.UpdateoIMPS:
                                                 bankId = GetString("Enter Bank Id:");
-                                                float newoIMPS = GetNumber("Enter New sRTGS value: ");
-                                                temp = bankService.UpdatesRTGS(newoIMPS, bankId);
-                                                print($"sRTGS updated to {temp}");
+                                                float newoIMPS = GetNumber("Enter New oIMPS value: ");
+                                                bankService.UpdateoIMPS(newoIMPS, bankId);
+                                                print($"sRTGS updated to {newoIMPS}");
                                                 Console.ReadLine();
                                                 break;
                                             case StaffLoginMenu.ViewAccountTransaction:

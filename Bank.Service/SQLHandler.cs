@@ -16,44 +16,47 @@ namespace BankApp.Service
     {
         private string connStr;
 
-        public string init()
+        public SQLHandler()
+        {
+            Init();
+        }
+
+        private bool Init()
         {
             connStr = "server=localhost;user=root;database=bankapp;port=3306;password=admin";
             try
             {
 
-                int temp = int.Parse((String)ExecuiteScaler(SqlQueries.CheckTabelsExist, new List<MySqlParameter>()));
+                int tablesExist = int.Parse((String)ExecuiteScaler(SqlQueries.CheckTabelsExist, new List<MySqlParameter>()));
                 
-                if (temp != 1)
+                if (tablesExist != 1)
                 {
                     return CreateTables();
                 }
 
-                return "Tables already exist !!";
+                return false;
             }
             catch (Exception e)
             {
-                return $"SQL ERROR WHILE INITILIZING DB \n{e}";
+                return false;
             }
         }
 
-        public string CreateTables()
+        public bool CreateTables()
         {
             try
             {
-                List<MySqlParameter> Z = new List<MySqlParameter>();
+                ExecuiteNonQuery(SqlQueries.CreateBanksTable);
+                ExecuiteNonQuery(SqlQueries.CreateCustomerAccountsTable);
+                ExecuiteNonQuery(SqlQueries.CreateStaffAccountsTable);
+                ExecuiteNonQuery(SqlQueries.CreateTransactionsTable);
+                ExecuiteNonQuery(SqlQueries.CreateCurrencyTable);
 
-                ExecuiteNonQuery(SqlQueries.CreateBanksTable, Z);
-                ExecuiteNonQuery(SqlQueries.CreateCustomerAccountsTable, Z);
-                ExecuiteNonQuery(SqlQueries.CreateStaffAccountsTable, Z);
-                ExecuiteNonQuery(SqlQueries.CreateTransactionsTable, Z);
-                ExecuiteNonQuery(SqlQueries.CreateCurrencyTable, Z);
-
-                return "Succesfully created all tables !!";
+                return true;
             }
             catch (Exception e)
             {
-                return $"SQL ERROR: {e.ToString()}";
+                return false;
             }
         }
 
@@ -81,16 +84,19 @@ namespace BankApp.Service
             }
         }
 
-        public int ExecuiteNonQuery(string query, List<MySqlParameter> sqlParameters)
+        public int ExecuiteNonQuery(string query, List<MySqlParameter> sqlParameters = null)
         {
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddRange(sqlParameters.ToArray());
+                    if(sqlParameters != null)
+                    {
+                        cmd.Parameters.AddRange(sqlParameters.ToArray());
+                    }
                     cmd.Connection.Open();
-                    var effectedRows = cmd.ExecuteNonQuery();
-                    return effectedRows;
+
+                    return cmd.ExecuteNonQuery();
                 }
             }
         }
@@ -100,13 +106,11 @@ namespace BankApp.Service
             using (MySqlConnection conn = new MySqlConnection(connStr))
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                { 
+                {
                     cmd.Parameters.AddRange(sqlParameters.ToArray());
 
                     cmd.Connection.Open();
-
-                    var value = cmd.ExecuteScalar();
-                    return value;
+                    return cmd.ExecuteScalar();
                 }
             }
         }
