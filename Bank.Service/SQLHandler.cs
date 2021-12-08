@@ -27,9 +27,9 @@ namespace BankApp.Service
             try
             {
 
-                int tablesExist = int.Parse((String)ExecuiteScaler(SqlQueries.CheckTabelsExist, new List<MySqlParameter>()));
+                int tableCount = int.Parse((String)ExecuiteScaler(SqlQueries.CheckTabelsExist, new List<MySqlParameter>()));
                 
-                if (tablesExist != 1)
+                if (tableCount == 0)
                 {
                     return CreateTables();
                 }
