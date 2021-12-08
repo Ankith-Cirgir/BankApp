@@ -76,7 +76,7 @@ namespace BankApp.CLI
                                                         ClearScreen();
                                                         string CustomerAccountId = GetString(Messages.AskAccountId);
                                                         string NewName = GetString(Messages.AskName);
-                                                        NewName = bankService.UpdateCustomerName(CustomerAccountId, NewName);
+                                                        bankService.UpdateCustomerName(CustomerAccountId, NewName);
                                                         println($"Name has been updated to {NewName}");
                                                         Console.ReadLine();
                                                         break;
@@ -84,7 +84,7 @@ namespace BankApp.CLI
                                                         ClearScreen();
                                                         string CustomerId = GetString(Messages.AskAccountId);
                                                         string NewPassword = GetString(Messages.AskPassword);
-                                                        NewPassword = bankService.UpdateCustomerPassword(CustomerId, NewPassword);
+                                                        bankService.UpdateCustomerPassword(CustomerId, NewPassword);
                                                         print($"Password has been updated to {NewPassword}");
                                                         Console.ReadLine();
                                                         break;

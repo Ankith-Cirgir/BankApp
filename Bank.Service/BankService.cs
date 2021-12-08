@@ -189,26 +189,23 @@ namespace BankApp.Service
             
         }
 
-        public string UpdateCustomerName(string accountId, string newName)
+        public int UpdateCustomerName(string accountId, string newName)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
             parameterList.Add(new MySqlParameter("@newName", newName));
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateName, sqlParameters: parameterList);
-            return newName;
+            return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateName, sqlParameters: parameterList);
         }
 
-        public string UpdateCustomerPassword(string accountId, string newPassword)
+        public int UpdateCustomerPassword(string accountId, string newPassword)
         {
 
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
             parameterList.Add(new MySqlParameter("@newName", newPassword));
-
-
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatePassword, sqlParameters: parameterList);
-            return newPassword;
+            
+            return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatePassword, sqlParameters: parameterList); 
         }
 
         public bool DeleteCustomerAccount(string accountId)
@@ -217,9 +214,8 @@ namespace BankApp.Service
             {
                 List<MySqlParameter> parameterList = new List<MySqlParameter>();
                 parameterList.Add(new MySqlParameter("@AccountId", accountId));
-
-                sqlHandler.ExecuiteNonQuery(SqlQueries.DeleteCustomerAccount, sqlParameters: parameterList);
-                return true;
+    
+                return sqlHandler.ExecuiteNonQuery(SqlQueries.DeleteCustomerAccount, sqlParameters: parameterList) == 1;
             }
             catch
             {
@@ -337,44 +333,39 @@ namespace BankApp.Service
             }
         }
 
-        public float UpdatesRTGS(float currencyValue, string bankId)
+        public int UpdatesRTGS(float currencyValue, string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@sRTGSCharge", currencyValue));
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-
-
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesRTGS, sqlParameters: parameterList);
-            return currencyValue;
+            
+            return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesRTGS, sqlParameters: parameterList);
         }
 
-        public float UpdatesIMPS(float currencyValue, string bankId)
+        public int UpdatesIMPS(float currencyValue, string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@sIMPSCharge", currencyValue));
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesIMPS, sqlParameters: parameterList);
-            return currencyValue;
+            return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesIMPS, sqlParameters: parameterList);
         }
 
-        public float UpdateoRTGS(float currencyValue, string bankId)
+        public int UpdateoRTGS(float currencyValue, string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@oRTGSCharge", currencyValue));
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoRTGS, sqlParameters: parameterList);
-            return currencyValue;
+            return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoRTGS, sqlParameters: parameterList);
         }
 
-        public float UpdateoIMPS(float currencyValue, string bankId)
+        public int UpdateoIMPS(float currencyValue, string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@oIMPSCharge", currencyValue));
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-
-            sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoIMPS, sqlParameters: parameterList);
-            return currencyValue;
+            
+            return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoIMPS, sqlParameters: parameterList); 
         }
 
         public float GetBanksRTGSCharges(string bankId)
@@ -382,32 +373,32 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBanksRTGSCharges, sqlParameters: parameterList);
-            return float.Parse(x.ToString());
+            var sRTGSValue = sqlHandler.ExecuiteScaler(SqlQueries.GetBanksRTGSCharges, sqlParameters: parameterList);
+            return float.Parse(sRTGSValue.ToString());
         }
         public float GetBanksIMPSCharges(string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBanksIMPSCharges, sqlParameters: parameterList);
-            return float.Parse(x.ToString());
+            var sIMPSValue = sqlHandler.ExecuiteScaler(SqlQueries.GetBanksIMPSCharges, sqlParameters: parameterList);
+            return float.Parse(sIMPSValue.ToString());
         }
         public float GetBankoRTGSCharges(string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBankoRTGSCharges, sqlParameters: parameterList);
-            return float.Parse(x.ToString());
+            var oRTGSValue = sqlHandler.ExecuiteScaler(SqlQueries.GetBankoRTGSCharges, sqlParameters: parameterList);
+            return float.Parse(oRTGSValue.ToString());
         }
         public float GetBankoIMPSCharges(string bankId)
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBankoIMPSCharges, sqlParameters: parameterList);
-            return float.Parse(x.ToString());
+            var oIMPSValue = sqlHandler.ExecuiteScaler(SqlQueries.GetBankoIMPSCharges, sqlParameters: parameterList);
+            return float.Parse(oIMPSValue.ToString());
         }
 
         public float GetBankProfits(string bankId)
@@ -415,8 +406,8 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBankProfits, sqlParameters: parameterList);
-            return float.Parse(x.ToString());
+            var bankProfits = sqlHandler.ExecuiteScaler(SqlQueries.GetBankProfits, sqlParameters: parameterList);
+            return float.Parse(bankProfits.ToString());
         }
         public bool UpdateBankProfits(string bankId, float amount)
         {
@@ -439,8 +430,8 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetBankId, sqlParameters: parameterList);
-            return x.ToString();
+
+            return sqlHandler.ExecuiteScaler(SqlQueries.GetBankId, sqlParameters: parameterList).ToString();
         }
 
         public bool AddCurrency(string name, float value, string bankId)
@@ -525,8 +516,8 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionAmount, sqlParameters: parameterList);
-            return float.Parse(x.ToString());
+            var transactionAmount = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionAmount, sqlParameters: parameterList);
+            return float.Parse(transactionAmount.ToString());
         }
 
         public int GetTransactionType(string transactionId)
@@ -534,8 +525,8 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionType, sqlParameters: parameterList);
-            return int.Parse(x.ToString());
+            var transactionType = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionType, sqlParameters: parameterList);
+            return int.Parse(transactionType.ToString());
         }
 
         public string GetTransactionSenderId(string transactionId)
@@ -543,8 +534,8 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionSenderId, sqlParameters: parameterList);
-            return x.ToString();
+            var senderId = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionSenderId, sqlParameters: parameterList);
+            return senderId.ToString();
         }
 
         public string GetTransactionReceiverId(string transactionId)
@@ -552,8 +543,8 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
 
-            var x = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionReceiverId, sqlParameters: parameterList);
-            return x.ToString();
+            var receiverId = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionReceiverId, sqlParameters: parameterList);
+            return receiverId.ToString();
         }
     }
 }
