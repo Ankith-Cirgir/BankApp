@@ -11,14 +11,14 @@ namespace BankApp.Service
     public class BankService
     {
 
-        MyDbContext dbContext;
+        private MyDbContext dbContext;
 
         public BankService()
         {
             dbContext = new MyDbContext();
         }
 
-        public string GetDateTimeNow(bool forId)
+        private string GetDateTimeNow(bool forId)
         {
             return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
@@ -103,7 +103,7 @@ namespace BankApp.Service
             {
                 customer.Balance = currentBalance - amount;
                 dbContext.SaveChanges();
-                GenerateTransactions(accountId, amount, 1);
+                GenerateTransactions(accountId, amount, (int)Transaction.TransactionType.Withdraw);
                 return true;
             }
             else
@@ -115,13 +115,13 @@ namespace BankApp.Service
         public bool AuthenticateCustomer(string accountId,string pass)
         {
             var customer = dbContext.CustomerAccounts.Find(accountId);
-            return customer.Password == pass ? true : false;
+            return customer.Password == pass;
         }
 
         public bool AuthenticateStaff(string accountId, string pass)
         {
             var staff = dbContext.StaffAccounts.Find(accountId);
-            return staff.Password == pass ? true : false;
+            return staff.Password == pass;
         }
 
         public string UpdateCustomerName(string accountId,string newName)
@@ -176,13 +176,13 @@ namespace BankApp.Service
             dbContext.SaveChanges();
         }
 
-        public void GenerateTransactions(string toId, float amount, int type)
+        public void GenerateTransactions(string toId, float amount, Transaction.TransactionType type)
         {
             var transaction = new Transaction
             {
                 TransactionId = $"{dbContext.CustomerAccounts.Find(toId).BankId}{toId}{GetDateTimeNow(true)}",
                 Amount = amount,
-                Type = type,
+                Type = (int)type,
                 ReceiverId = toId,
                 Time = GetDateTimeNow(false)
             };

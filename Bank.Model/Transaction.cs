@@ -9,7 +9,6 @@ namespace BankApp.Model
 {
     public class Transaction 
     {
-        public static int Total { get; set; }
 
         [MaxLength(45)]
         public string TransactionId { get; set; }

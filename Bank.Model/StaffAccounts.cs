@@ -21,12 +21,5 @@ namespace BankApp.Model
 
         public string BankId { get; set; }
 
-        /*
-        public StaffAccounts(string accountId, string name, string password)
-        {
-            this.AccountId = accountId;
-            this.Name = name;
-            this.Password = password;
-        }*/
     }
 }
