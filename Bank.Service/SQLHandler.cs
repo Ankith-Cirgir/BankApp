@@ -14,7 +14,7 @@ namespace BankApp.Service
 {
     class SQLHandler
     {
-        private string connStr;
+        private string ConnectionSting;
 
         public SQLHandler()
         {
@@ -23,11 +23,11 @@ namespace BankApp.Service
 
         private bool Init()
         {
-            connStr = "server=localhost;user=root;database=bankapp;port=3306;password=admin";
+            ConnectionSting = "server=localhost;user=root;database=bankapp;port=3306;password=admin";
             try
             {
 
-                int tableCount = int.Parse((String)ExecuiteScaler(SqlQueries.CheckTabelsExist, new List<MySqlParameter>()));
+                int tableCount = int.Parse((String)ExecuiteScaler(SqlQueries.CheckTabelsExist));
                 
                 if (tableCount == 0)
                 {
@@ -62,7 +62,7 @@ namespace BankApp.Service
 
         public DataTable ExecuteReader(string query, List<MySqlParameter> sqlParameters)
         {
-            using (MySqlConnection conn = new MySqlConnection(connStr))
+            using (MySqlConnection conn = new MySqlConnection(ConnectionSting))
             {
                 using (MySqlDataAdapter adr = new MySqlDataAdapter())
                 {
@@ -86,7 +86,7 @@ namespace BankApp.Service
 
         public int ExecuiteNonQuery(string query, List<MySqlParameter> sqlParameters = null)
         {
-            using (MySqlConnection conn = new MySqlConnection(connStr))
+            using (MySqlConnection conn = new MySqlConnection(ConnectionSting))
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
@@ -101,13 +101,16 @@ namespace BankApp.Service
             }
         }
 
-        public object ExecuiteScaler(string query, List<MySqlParameter> sqlParameters)
+        public object ExecuiteScaler(string query, List<MySqlParameter> sqlParameters = null)
         {
-            using (MySqlConnection conn = new MySqlConnection(connStr))
+            using (MySqlConnection conn = new MySqlConnection(ConnectionSting))
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddRange(sqlParameters.ToArray());
+                    if(sqlParameters == null)
+                    {
+                        cmd.Parameters.AddRange(sqlParameters.ToArray());
+                    }
 
                     cmd.Connection.Open();
                     return cmd.ExecuteScalar();
