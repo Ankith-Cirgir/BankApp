@@ -13,14 +13,14 @@ namespace BankApp.Service
 
         MyDbContext dbContext;
 
+        public BankService()
+        {
+            dbContext = new MyDbContext();
+        }
+
         public string GetDateTimeNow(bool forId)
         {
             return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-        }
-
-        public void init() {
-
-            dbContext = new MyDbContext();
         }
 
 

@@ -27,27 +27,6 @@ namespace BankApp.Model
         [MaxLength(45)]
         public string Time { get; set; }
 
-
-        /*
-        public Transaction(string TransactionId,string senderId, string receiverId, float amount, int type, string time)
-        {
-            this.TransactionId = TransactionId;
-            this.SenderId = senderId;
-            this.ReceiverId = receiverId;
-            this.Amount = amount;
-            this.Type = type;
-            this.Time = time;
-            Total += 1;
-        }
-        public Transaction(string TransactionId, string rId, float amount, int type, string time)
-        {
-            this.TransactionId = TransactionId;
-            this.ReceiverId = rId;
-            this.Amount = amount;
-            this.Type = type;
-            this.Time = time;
-            Total += 1;
-        }*/
         public enum TransactionType
         {
             Withdraw = 1,

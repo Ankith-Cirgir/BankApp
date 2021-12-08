@@ -23,28 +23,5 @@ namespace BankApp.Model
 
         public float oIMPSCharge { get; set; }
 
-        /*
-
-        public Bank(string bankName,float sRTGS, float sIMPS, float oRTGS, float oIMPS)
-        {
-            this.BankName = bankName;
-            this.BankId = $"{bankName.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyy")}";
-            this.sRTGSCharge = sRTGS;
-            this.sIMPSCharge = sIMPS;
-            this.oRTGSCharge = oRTGS;
-            this.oIMPSCharge = oIMPS;
-
-        }
-
-        public Bank(string bankName)
-        {
-            this.BankName = bankName;
-            this.BankId = $"{bankName.Substring(0, 3)}{DateTime.Now.ToString("ddMMyyyy")}";
-            this.sRTGSCharge = 0;
-            this.sIMPSCharge = 5;
-            this.oRTGSCharge = 2;
-            this.oIMPSCharge = 6;
-
-        }*/
     }
 }

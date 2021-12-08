@@ -13,7 +13,6 @@ namespace BankApp.CLI
             bool exit = false;
 
             BankService bankService = new BankService();
-            bankService.init();
 
             while (!exit)
             {
