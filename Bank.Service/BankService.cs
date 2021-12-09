@@ -91,7 +91,7 @@ namespace BankApp.Service
             float currentBalance = customer.Balance;
             customer.Balance = currentBalance + amount;
             dbContext.SaveChanges();
-            GenerateTransactions(accountId, amount, 2);
+            GenerateTransactions(accountId, amount, Transaction.TransactionType.Deposit);
             return customer.Name;
         }
 
@@ -103,7 +103,7 @@ namespace BankApp.Service
             {
                 customer.Balance = currentBalance - amount;
                 dbContext.SaveChanges();
-                GenerateTransactions(accountId, amount, (int)Transaction.TransactionType.Withdraw);
+                GenerateTransactions(accountId, amount, Transaction.TransactionType.Withdraw);
                 return true;
             }
             else
@@ -161,13 +161,13 @@ namespace BankApp.Service
             return customer.Balance;
         }
 
-        public void GenerateTransactions(string fromId, string toId, float amount, int type)
+        public void GenerateTransactions(string fromId, string toId, float amount, Transaction.TransactionType type)
         {
             var transaction = new Transaction
             {
                 TransactionId = $"{dbContext.CustomerAccounts.Find(toId).BankId}{toId}{GetDateTimeNow(true)}",
                 Amount = amount,
-                Type = type,
+                Type = (int)type,
                 SenderId = fromId,
                 ReceiverId = toId,
                 Time = GetDateTimeNow(false)
@@ -202,7 +202,7 @@ namespace BankApp.Service
                 fromCustomer.Balance = fromBalance - amount;
                 float toBalance = toCustomer.Balance;
                 _ = toCustomer.BankId == fromCustomer.BankId ? toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(toCustomer.BankId).sRTGSCharge): toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(fromCustomer.BankId).oRTGSCharge);
-                GenerateTransactions(fromId,toId,amount,3);
+                GenerateTransactions(fromId,toId,amount,Transaction.TransactionType.Transfer);
                 dbContext.SaveChanges();
                 return true;
             }
@@ -220,7 +220,7 @@ namespace BankApp.Service
                 fromCustomer.Balance = fromBalance - amount;
                 float toBalance = toCustomer.Balance;
                 _ = toCustomer.BankId == fromCustomer.BankId ? toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(toCustomer.BankId).sIMPSCharge) : toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(fromCustomer.BankId).oIMPSCharge);
-                GenerateTransactions(fromId, toId, amount, 3);
+                GenerateTransactions(fromId, toId, amount, Transaction.TransactionType.Transfer);
                 dbContext.SaveChanges();
                 return true;
             }
@@ -251,36 +251,36 @@ namespace BankApp.Service
             return table;
         }
 
-        public float UpdatesRTGS(float val, string bankId)
+        public bool UpdatesRTGS(float sRTGSCharge, string bankId)
         {
             var bank = dbContext.Banks.Find(bankId);
-            bank.sRTGSCharge = val;
+            bank.sRTGSCharge = sRTGSCharge;
             dbContext.SaveChanges();
-            return val;
+            return true;
         }
 
-        public float UpdatesIMPS(float val, string bankId)
+        public bool UpdatesIMPS(float sIMPSCharge, string bankId)
         {
             var bank = dbContext.Banks.Find(bankId);
-            bank.sIMPSCharge = val;
+            bank.sIMPSCharge = sIMPSCharge;
             dbContext.SaveChanges();
-            return val;
+            return true;
         }
 
-        public float UpdateoRTGS(float val, string bankId)
+        public bool UpdateoRTGS(float oRTGSCharge, string bankId)
         {
             var bank = dbContext.Banks.Find(bankId);
-            bank.oRTGSCharge = val;
+            bank.oRTGSCharge = oRTGSCharge;
             dbContext.SaveChanges();
-            return val;
+            return true;
         }
 
-        public float UpdateoIMPS(float val, string bankId)
+        public bool UpdateoIMPS(float oIMPSCharge, string bankId)
         {
             var bank = dbContext.Banks.Find(bankId);
-            bank.oIMPSCharge = val;
+            bank.oIMPSCharge = oIMPSCharge;
             dbContext.SaveChanges();
-            return val;
+            return true;
         }
 
         public float GetBankProfits(string bankId)
@@ -321,7 +321,6 @@ namespace BankApp.Service
                     else
                     {
                         return false;
-
                     }
 
                 case (int)Transaction.TransactionType.Transfer:
@@ -335,7 +334,6 @@ namespace BankApp.Service
                     }
                     else
                     {
-
                         return false;
                     }
 
