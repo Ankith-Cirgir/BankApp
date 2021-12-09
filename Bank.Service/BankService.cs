@@ -94,13 +94,13 @@ namespace BankApp.Service
             return true;
         }
 
-        public void GenerateTransaction(string receiverId, float amount, int type)
+        public void GenerateTransaction(string receiverId, float amount, Transaction.TransactionType type)
         {
             string TId = $"{GetBankId(receiverId)}{receiverId}{GetDateTimeNow(true)}";
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@TransactionId", TId));
             parameterList.Add(new MySqlParameter("@Amount", amount));
-            parameterList.Add(new MySqlParameter("@Type", type));
+            parameterList.Add(new MySqlParameter("@Type", (int)type));
             parameterList.Add(new MySqlParameter("@Time", GetDateTimeNow(false)));
             parameterList.Add(new MySqlParameter("@ReceiversId", receiverId));
 
@@ -108,7 +108,7 @@ namespace BankApp.Service
 
         }
 
-        public void GenerateTransaction(string senderId, string receiverId, float amount, int type)
+        public void GenerateTransaction(string senderId, string receiverId, float amount, Transaction.TransactionType type)
         {
             string TId = $"{GetBankId(receiverId)}{receiverId}{GetDateTimeNow(true)}";
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
@@ -132,7 +132,7 @@ namespace BankApp.Service
                 float newBalance = currentBalance + amount * GetCurrencyValue(currencyName);
 
                 UpdateBalance(accountId, newBalance);
-                GenerateTransaction(accountId, amount, 2);
+                GenerateTransaction(accountId, amount, Transaction.TransactionType.Deposit);
                 return GetName(accountId);
             }
             catch (Exception e)
@@ -151,7 +151,7 @@ namespace BankApp.Service
                     return false;
                 }
                 UpdateBalance(accountId, newBalance);
-                GenerateTransaction(accountId, amount, 1);
+                GenerateTransaction(accountId, amount, Transaction.TransactionType.Withdraw);
                 return true;
             }
             catch
@@ -258,7 +258,7 @@ namespace BankApp.Service
                 UpdatedAmount = amount - temp;
             }
 
-            GenerateTransaction(fromId, toId, amount, 3);
+            GenerateTransaction(fromId, toId, amount, Transaction.TransactionType.Transfer);
 
             UpdateBalance(fromId, GetBalance(fromId) - amount);
             UpdateBalance(toId, GetBalance(toId) + UpdatedAmount);
@@ -287,7 +287,7 @@ namespace BankApp.Service
                 UpdatedAmount = amount - temp;
             }
 
-            GenerateTransaction(fromId, toId, amount, 3);
+            GenerateTransaction(fromId, toId, amount, Transaction.TransactionType.Transfer);
 
             UpdateBalance(fromId, GetBalance(fromId) - amount);
             UpdateBalance(toId, GetBalance(toId) + UpdatedAmount);
