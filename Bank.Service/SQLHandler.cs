@@ -5,64 +5,42 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data;
 using MySql.Data.MySqlClient;
-using System.Globalization;
-using ConsoleTables;
-using static BankApp.Model.Transaction;
 using System.Data;
+using Microsoft.Extensions.Configuration;
+using System.Runtime.InteropServices;
 
 namespace BankApp.Service
 {
-    class SQLHandler
+    class SQLHandler 
     {
-        private string ConnectionSting;
+        private readonly string ConnectionString;
 
-        public SQLHandler()
+        public SQLHandler(IConfiguration configuration)
         {
+            ConnectionString = configuration.GetConnectionString("DefaultConnectionString");
             Init();
         }
 
-        private bool Init()
+        private void Init()
         {
-            ConnectionSting = "server=localhost;user=root;database=bankapp;port=3306;password=admin";
-            try
+            if (int.Parse(ExecuiteScaler(SqlQueries.CheckTabelsExist).ToString()) == 0)
             {
-
-                int tableCount = int.Parse((String)ExecuiteScaler(SqlQueries.CheckTabelsExist));
-                
-                if (tableCount == 0)
-                {
-                    return CreateTables();
-                }
-
-                return false;
-            }
-            catch (Exception e)
-            {
-                return false;
+                CreateTables();
             }
         }
 
-        public bool CreateTables()
+        public void CreateTables()
         {
-            try
-            {
-                ExecuiteNonQuery(SqlQueries.CreateBanksTable);
-                ExecuiteNonQuery(SqlQueries.CreateCustomerAccountsTable);
-                ExecuiteNonQuery(SqlQueries.CreateStaffAccountsTable);
-                ExecuiteNonQuery(SqlQueries.CreateTransactionsTable);
-                ExecuiteNonQuery(SqlQueries.CreateCurrencyTable);
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
+            ExecuiteNonQuery(SqlQueries.CreateBanksTable);
+            ExecuiteNonQuery(SqlQueries.CreateCustomerAccountsTable);
+            ExecuiteNonQuery(SqlQueries.CreateStaffAccountsTable);
+            ExecuiteNonQuery(SqlQueries.CreateTransactionsTable);
+            ExecuiteNonQuery(SqlQueries.CreateCurrencyTable);
         }
 
-        public DataTable ExecuteReader(string query, List<MySqlParameter> sqlParameters)
+        public DataTable ExecuteReader(string query,  List<MySqlParameter> sqlParameters)
         {
-            using (MySqlConnection conn = new MySqlConnection(ConnectionSting))
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
             {
                 using (MySqlDataAdapter adr = new MySqlDataAdapter())
                 {
@@ -84,9 +62,9 @@ namespace BankApp.Service
             }
         }
 
-        public int ExecuiteNonQuery(string query, List<MySqlParameter> sqlParameters = null)
+        public int ExecuiteNonQuery(string query,  [Optional] List<MySqlParameter> sqlParameters )
         {
-            using (MySqlConnection conn = new MySqlConnection(ConnectionSting))
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
@@ -101,17 +79,16 @@ namespace BankApp.Service
             }
         }
 
-        public object ExecuiteScaler(string query, List<MySqlParameter> sqlParameters = null)
+        public object ExecuiteScaler(string query, [Optional] List<MySqlParameter> sqlParameters )
         {
-            using (MySqlConnection conn = new MySqlConnection(ConnectionSting))
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
             {
                 using (MySqlCommand cmd = new MySqlCommand(query, conn))
                 {
-                    if(sqlParameters == null)
+                    if(sqlParameters != null)
                     {
                         cmd.Parameters.AddRange(sqlParameters.ToArray());
                     }
-
                     cmd.Connection.Open();
                     return cmd.ExecuteScalar();
                 }

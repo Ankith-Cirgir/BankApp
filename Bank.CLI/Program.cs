@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using BankApp.Service;
 using ConsoleTables;
+using Microsoft.Extensions.Configuration;
 
 namespace BankApp.CLI
 {
@@ -9,9 +11,12 @@ namespace BankApp.CLI
     {
         static void Main(string[] args)
         {
-            bool exit = false;
+            var builder = new ConfigurationBuilder().AddJsonFile("appSettings.json");
 
-            BankService bankService = new BankService();
+            var configuration = builder.Build();
+
+            bool exit = false;
+            BankService bankService = new BankService(configuration);
 
             while (!exit)
             {

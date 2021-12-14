@@ -1,0 +1,17 @@
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\bin\Debug\net5.0\ConConfig.exe
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\bin\Debug\net5.0\ConConfig.dll.config
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\bin\Debug\net5.0\ConConfig.deps.json
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\bin\Debug\net5.0\ConConfig.runtimeconfig.json
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\bin\Debug\net5.0\ConConfig.runtimeconfig.dev.json
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\bin\Debug\net5.0\ConConfig.dll
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\bin\Debug\net5.0\ref\ConConfig.dll
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\bin\Debug\net5.0\ConConfig.pdb
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\obj\Debug\net5.0\ConConfig.csproj.AssemblyReference.cache
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\obj\Debug\net5.0\ConConfig.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\obj\Debug\net5.0\ConConfig.AssemblyInfoInputs.cache
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\obj\Debug\net5.0\ConConfig.AssemblyInfo.cs
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\obj\Debug\net5.0\ConConfig.csproj.CoreCompileInputs.cache
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\obj\Debug\net5.0\ConConfig.dll
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\obj\Debug\net5.0\ref\ConConfig.dll
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\obj\Debug\net5.0\ConConfig.pdb
+C:\Users\pc\Desktop\Techno\TASK2\VS\Bank.CLI\ConConfig\obj\Debug\net5.0\ConConfig.genruntimeconfig.cache

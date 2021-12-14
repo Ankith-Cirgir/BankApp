@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BankApp.Model;
 using ConsoleTables;
+using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace BankApp.Service
@@ -15,9 +16,9 @@ namespace BankApp.Service
     {
         private SQLHandler sqlHandler;
 
-        public BankService()
+        public BankService(IConfiguration configuration)
         {
-            sqlHandler = new SQLHandler();
+            sqlHandler = new SQLHandler(configuration);
         }
 
         public static string GetDateTimeNow(bool forId)
@@ -118,9 +119,6 @@ namespace BankApp.Service
             parameterList.Add(new MySqlParameter("@Time", GetDateTimeNow(false)));
             parameterList.Add(new MySqlParameter("@ReceiverId", receiverId));
             parameterList.Add(new MySqlParameter("@SenderId", senderId));
-
-
-
             sqlHandler.ExecuiteNonQuery(SqlQueries.InsertTransaction, sqlParameters: parameterList);
         }
 
@@ -186,7 +184,6 @@ namespace BankApp.Service
             {
                 return false;
             }
-            
         }
 
         public int UpdateCustomerName(string accountId, string newName)
