@@ -180,9 +180,7 @@ namespace BankApp.CLI
                                         println($"Welcome {loginName}");
                                         println($"Your account balance is {balance}₹");
 
-
                                         CustomerLoginMenu loginChoice = (CustomerLoginMenu)Enum.Parse(typeof(CustomerLoginMenu), GetString(Messages.LoginMenu));
-
                                         switch (loginChoice)
                                         {
                                             case CustomerLoginMenu.TransferMoney:
