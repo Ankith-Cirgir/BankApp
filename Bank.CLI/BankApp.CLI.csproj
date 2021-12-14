@@ -13,4 +13,10 @@
     <ProjectReference Include="..\Bank.Service\BankApp.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
