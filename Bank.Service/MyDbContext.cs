@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BankApp.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace BankApp.Service
 {
@@ -22,7 +23,8 @@ namespace BankApp.Service
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
+            var builder = new ConfigurationBuilder().AddJsonFile("appSettings.json");
+            var configuration = builder.Build();
             optionsBuilder.UseMySQL("server=localhost;user=root;database=bankapp;port=3306;password=admin");
         }
 
