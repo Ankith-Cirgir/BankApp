@@ -22,6 +22,7 @@ namespace BankApp.Service
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+
             optionsBuilder.UseMySQL("server=localhost;user=root;database=bankapp;port=3306;password=admin");
         }
 
