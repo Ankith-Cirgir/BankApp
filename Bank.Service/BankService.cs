@@ -128,7 +128,6 @@ namespace BankApp.Service
             {
                 float currentBalance = GetBalance(accountId);
                 float newBalance = currentBalance + amount * GetCurrencyValue(currencyName);
-
                 UpdateBalance(accountId, newBalance);
                 GenerateTransaction(accountId, amount, Transaction.TransactionType.Deposit);
                 return GetName(accountId);
@@ -163,7 +162,6 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
             parameterList.Add(new MySqlParameter("@Password", pass));
-
             var x = sqlHandler.ExecuiteScaler(SqlQueries.AuthenticateCustomer, sqlParameters: parameterList);
             return x != null && x.ToString() == accountId;
         }
@@ -175,9 +173,7 @@ namespace BankApp.Service
                 List<MySqlParameter> parameterList = new List<MySqlParameter>();
                 parameterList.Add(new MySqlParameter("@AccountId", accountId));
                 parameterList.Add(new MySqlParameter("@Password", pass));
-
                 var x = sqlHandler.ExecuiteScaler(SqlQueries.AuthenticateStaff, sqlParameters: parameterList);
-
                 return x!= null && x.ToString() == accountId ;
             }
             catch(Exception e)
@@ -191,7 +187,6 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
             parameterList.Add(new MySqlParameter("@newName", newName));
-
             return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateName, sqlParameters: parameterList);
         }
 
@@ -201,7 +196,6 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
             parameterList.Add(new MySqlParameter("@newName", newPassword));
-            
             return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatePassword, sqlParameters: parameterList); 
         }
 
@@ -211,7 +205,6 @@ namespace BankApp.Service
             {
                 List<MySqlParameter> parameterList = new List<MySqlParameter>();
                 parameterList.Add(new MySqlParameter("@AccountId", accountId));
-    
                 return sqlHandler.ExecuiteNonQuery(SqlQueries.DeleteCustomerAccount, sqlParameters: parameterList) == 1;
             }
             catch
@@ -224,7 +217,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
-
             return sqlHandler.ExecuiteScaler(SqlQueries.GetName, sqlParameters: parameterList).ToString();
         }
 
@@ -232,7 +224,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
-
             return float.Parse(sqlHandler.ExecuiteScaler(SqlQueries.GetBalance, sqlParameters: parameterList).ToString());
         }
 
@@ -254,12 +245,9 @@ namespace BankApp.Service
                 float temp = amount * (GetBankoRTGSCharges(fromBankId) / 100);
                 UpdatedAmount = amount - temp;
             }
-
             GenerateTransaction(fromId, toId, amount, Transaction.TransactionType.Transfer);
-
             UpdateBalance(fromId, GetBalance(fromId) - amount);
             UpdateBalance(toId, GetBalance(toId) + UpdatedAmount);
-
             UpdateBankProfits(fromBankId, GetBankProfits(fromBankId) + (amount - UpdatedAmount));
             return true;
         }
@@ -268,7 +256,6 @@ namespace BankApp.Service
         {
             float UpdatedAmount;
             string fromBankId = GetBankId(fromId);
-
             if (GetBalance(fromId) - amount < 0)
             {
                 return false;
@@ -283,14 +270,10 @@ namespace BankApp.Service
                 float temp = amount * (GetBankoIMPSCharges(fromBankId) / 100);
                 UpdatedAmount = amount - temp;
             }
-
             GenerateTransaction(fromId, toId, amount, Transaction.TransactionType.Transfer);
-
             UpdateBalance(fromId, GetBalance(fromId) - amount);
             UpdateBalance(toId, GetBalance(toId) + UpdatedAmount);
-
             UpdateBankProfits(fromBankId, GetBankProfits(fromBankId) + (amount - UpdatedAmount));
-
             return true;
         }
 
@@ -301,10 +284,8 @@ namespace BankApp.Service
                 List<MySqlParameter> parameterList = new List<MySqlParameter>();
                 parameterList.Add(new MySqlParameter("@ReceiverId", accountId));
                 parameterList.Add(new MySqlParameter("@SenderId", accountId));
-
                 DataTable dt = sqlHandler.ExecuteReader(SqlQueries.GetTransactions, parameterList);
                 ConsoleTable table = new ConsoleTable(new ConsoleTableOptions { Columns = new[] { "TransactionId", "SendersAccountId", "RecieversAccountId", "Type", "Amount", "Time" }, EnableCount = false });
-
                 foreach (DataRow dr in dt.Rows)
                 {
                     string type = "";
@@ -335,7 +316,6 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@sRTGSCharge", currencyValue));
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-            
             return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesRTGS, sqlParameters: parameterList);
         }
 
@@ -343,7 +323,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@sIMPSCharge", currencyValue));
-
             return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdatesIMPS, sqlParameters: parameterList);
         }
 
@@ -352,7 +331,6 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@oRTGSCharge", currencyValue));
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-
             return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoRTGS, sqlParameters: parameterList);
         }
 
@@ -361,7 +339,6 @@ namespace BankApp.Service
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@oIMPSCharge", currencyValue));
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-            
             return sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateoIMPS, sqlParameters: parameterList); 
         }
 
@@ -369,7 +346,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-
             var sRTGSValue = sqlHandler.ExecuiteScaler(SqlQueries.GetBanksRTGSCharges, sqlParameters: parameterList);
             return float.Parse(sRTGSValue.ToString());
         }
@@ -377,7 +353,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-
             var sIMPSValue = sqlHandler.ExecuiteScaler(SqlQueries.GetBanksIMPSCharges, sqlParameters: parameterList);
             return float.Parse(sIMPSValue.ToString());
         }
@@ -385,7 +360,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-
             var oRTGSValue = sqlHandler.ExecuiteScaler(SqlQueries.GetBankoRTGSCharges, sqlParameters: parameterList);
             return float.Parse(oRTGSValue.ToString());
         }
@@ -393,7 +367,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-
             var oIMPSValue = sqlHandler.ExecuiteScaler(SqlQueries.GetBankoIMPSCharges, sqlParameters: parameterList);
             return float.Parse(oIMPSValue.ToString());
         }
@@ -402,7 +375,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@BankId", bankId));
-
             var bankProfits = sqlHandler.ExecuiteScaler(SqlQueries.GetBankProfits, sqlParameters: parameterList);
             return float.Parse(bankProfits.ToString());
         }
@@ -413,7 +385,6 @@ namespace BankApp.Service
                 List<MySqlParameter> parameterList = new List<MySqlParameter>();
                 parameterList.Add(new MySqlParameter("@newProfits", amount));
                 parameterList.Add(new MySqlParameter("@BankId", bankId));
-
                 sqlHandler.ExecuiteNonQuery(SqlQueries.UpdateBankProfits, parameterList);
                 return true;
             }
@@ -427,7 +398,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@AccountId", accountId));
-
             return sqlHandler.ExecuiteScaler(SqlQueries.GetBankId, sqlParameters: parameterList).ToString();
         }
 
@@ -439,7 +409,6 @@ namespace BankApp.Service
                 parameterList.Add(new MySqlParameter("@BankId", bankId));
                 parameterList.Add(new MySqlParameter("@Currency", name));
                 parameterList.Add(new MySqlParameter("@Value", value));
-
                 sqlHandler.ExecuiteNonQuery(SqlQueries.AddCurrency, sqlParameters: parameterList);
                 return true;
             }
@@ -453,7 +422,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@CurrencyName", currencyName));
-
             var x = sqlHandler.ExecuiteScaler(SqlQueries.GetCurrencyValue, sqlParameters: parameterList);
             return float.Parse(x.ToString());
         }
@@ -465,7 +433,6 @@ namespace BankApp.Service
                 float transactionAmount = GetTransactionAmount(transactionId);
                 string receiversId = GetTransactionReceiverId(transactionId);
                 float receiversBalance = GetBalance(receiversId);
-
                 switch (GetTransactionType(transactionId))
                 {
                     case (int)Transaction.TransactionType.Deposit:
@@ -479,25 +446,19 @@ namespace BankApp.Service
                             return false;
                         }
                         break;
-
                     case (int)Transaction.TransactionType.Withdraw:
                         UpdateBalance(receiversId, receiversBalance + transactionAmount);
                         break;
-
                     case (int)Transaction.TransactionType.Transfer:
                         string sendersId = GetTransactionSenderId(transactionId);
-
                         float newBal = receiversBalance - transactionAmount;
                         UpdateBalance(receiversId, newBal);
-
                         float sendersBalance = GetBalance(sendersId);
                         UpdateBalance(sendersId, sendersBalance + transactionAmount);
                         break;
-
                 }
                 List<MySqlParameter> parameterList = new List<MySqlParameter>();
                 parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
-
                 sqlHandler.ExecuiteNonQuery(SqlQueries.DeleteTransaction, sqlParameters: parameterList);
                 return true;
             }
@@ -512,7 +473,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
-
             var transactionAmount = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionAmount, sqlParameters: parameterList);
             return float.Parse(transactionAmount.ToString());
         }
@@ -521,7 +481,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
-
             var transactionType = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionType, sqlParameters: parameterList);
             return int.Parse(transactionType.ToString());
         }
@@ -530,7 +489,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
-
             var senderId = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionSenderId, sqlParameters: parameterList);
             return senderId.ToString();
         }
@@ -539,7 +497,6 @@ namespace BankApp.Service
         {
             List<MySqlParameter> parameterList = new List<MySqlParameter>();
             parameterList.Add(new MySqlParameter("@TransactionId", transactionId));
-
             var receiverId = sqlHandler.ExecuiteScaler(SqlQueries.GetTransactionReceiverId, sqlParameters: parameterList);
             return receiverId.ToString();
         }

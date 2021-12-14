@@ -47,8 +47,6 @@ namespace BankApp.CLI
                     print("Enter: ");
                 }
             }
-
-
         }
     }
 }

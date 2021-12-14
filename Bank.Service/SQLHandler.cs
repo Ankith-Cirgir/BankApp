@@ -48,10 +48,8 @@ namespace BankApp.Service
                     {
                         adr.SelectCommand = new MySqlCommand(query, conn);
                         adr.SelectCommand.Parameters.AddRange(sqlParameters.ToArray());
-
                         DataTable dt = new DataTable();
                         adr.Fill(dt);
-
                         return dt;
                     }
                     catch(Exception e) {
@@ -94,6 +92,5 @@ namespace BankApp.Service
                 }
             }
         }
-
     }
 }

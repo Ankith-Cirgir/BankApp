@@ -12,12 +12,9 @@ namespace BankApp.CLI
         static void Main(string[] args)
         {
             var builder = new ConfigurationBuilder().AddJsonFile("appSettings.json");
-
             var configuration = builder.Build();
-
             bool exit = false;
             BankService bankService = new BankService(configuration);
-
             while (!exit)
             {
                 ClearScreen();
@@ -36,19 +33,14 @@ namespace BankApp.CLI
                             println($"{amount}₹ have been deposited into {depositName} Account");
                             Console.ReadLine();
                             break;
-
                         case MainMenu.Login:
                             ClearScreen();
                             string loginId, loginPassword;
-
                             int option = (int)GetNumber("1) Bankstaff Login \n2) Customer Login \n\nEnter Your Choice: ");
-
                             ClearScreen();
                             loginId = GetString(Messages.AskAccountId);
-
                             loginPassword = GetString(Messages.AskPassword);
                             ClearScreen();
-
                             if (option == 1)
                             {
                                 if (bankService.AuthenticateStaff(loginId, loginPassword))
@@ -71,7 +63,6 @@ namespace BankApp.CLI
                                                 println($"Bank account created with:\nAccount Id: {createAccountId}\nPassword:{createAccountPassword}");
                                                 Console.ReadLine();
                                                 break;
-
                                             case StaffLoginMenu.UpdateAccount:
                                                 ClearScreen();
                                                 UpdateCustomerAccountMenu updateCustomerAccountLoginChoice = (UpdateCustomerAccountMenu)Enum.Parse(typeof(UpdateCustomerAccountMenu), GetNumber(Messages.UpdateCustomerAccount).ToString());
@@ -184,10 +175,7 @@ namespace BankApp.CLI
                                         float balance = bankService.GetBalance(loginId);
                                         println($"Welcome {loginName}");
                                         println($"Your account balance is {balance}₹");
-
-
                                         CustomerLoginMenu loginChoice = (CustomerLoginMenu)Enum.Parse(typeof(CustomerLoginMenu), GetString(Messages.LoginMenu));
-
                                         switch (loginChoice)
                                         {
                                             case CustomerLoginMenu.TransferMoney:
@@ -209,12 +197,10 @@ namespace BankApp.CLI
                                                 break;
                                             case CustomerLoginMenu.Withdraw:
                                                 float withdrawAmount = GetNumber(Messages.AskWithdrawAmount);
-
                                                 bool check = bankService.WithdrawAmount(loginId, withdrawAmount);
                                                 ClearScreen();
                                                 println(check ? $"{withdrawAmount} has been withdrawed succesfully" : Messages.InsuffiecientFunds);
                                                 Console.ReadLine();
-
                                                 break;
                                             case CustomerLoginMenu.ShowTransactions:
                                                 ClearScreen();
@@ -248,7 +234,6 @@ namespace BankApp.CLI
                     println("Error Occured");
                     Console.ReadLine();
                 }
-
             }
         }
     }
