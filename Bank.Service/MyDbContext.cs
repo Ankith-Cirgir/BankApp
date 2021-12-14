@@ -25,7 +25,8 @@ namespace BankApp.Service
         {
             var builder = new ConfigurationBuilder().AddJsonFile("appSettings.json");
             var configuration = builder.Build();
-            optionsBuilder.UseMySQL("server=localhost;user=root;database=bankapp;port=3306;password=admin");
+
+            optionsBuilder.UseMySQL(configuration.GetConnectionString("DefaultConnectionString"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
