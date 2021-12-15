@@ -23,7 +23,15 @@ namespace BankApp.Service
             return forId ? DateTime.Now.ToString("ddMMyyyyHHmmss") : DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
 
-
+        /// <summary>
+        /// Use this method to create a new bank with all the charges and a name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="sRTGS"></param>
+        /// <param name="sIMPS"></param>
+        /// <param name="oRTGS"></param>
+        /// <param name="oIMPS"></param>
+        /// <returns>You get BankId of the bank you just created.</returns>
         public string AddBank(string name, float sRTGS, float sIMPS, float oRTGS, float oIMPS)
         {
             var bank = new Bank
@@ -40,6 +48,11 @@ namespace BankApp.Service
             return bank.BankId;
         }
 
+        /// <summary>
+        /// Use this method to create a new bank with just a name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>You get BankId of the bank you just created.</returns>
         public string AddBank(string name)
         {
             var bank = new Bank
@@ -56,13 +69,13 @@ namespace BankApp.Service
             return bank.BankId;
         }
 
-        public string CreateCustomerAccount(string name, string pass,string bankId)
+        public string CreateCustomerAccount(string name, string password,string bankId)
         {
             var customer = new CustomerAccount
             {
                 AccountId = $"{name.Substring(0, 3)}{GetDateTimeNow(true)}",
                 Name = name,
-                Password = pass,
+                Password = password,
                 BankId = bankId,
                 Balance = 0
             };
@@ -71,13 +84,13 @@ namespace BankApp.Service
             return customer.AccountId;
         }
 
-        public string CreateStaffAccount(string name, string pass, string bankId)
+        public string CreateStaffAccount(string name, string password, string bankId)
         {
             var staffAccounts= new StaffAccounts
             {
                 AccountId = $"{name.Substring(0, 3)}{GetDateTimeNow(true)}",
                 Name = name,
-                Password = pass,
+                Password = password,
                 BankId = bankId
             };
             dbContext.Add(staffAccounts);
@@ -106,22 +119,19 @@ namespace BankApp.Service
                 GenerateTransactions(accountId, amount, Transaction.TransactionType.Withdraw);
                 return true;
             }
-            else
-            {
-                return false;
-            }            
+            return false;
         }
 
-        public bool AuthenticateCustomer(string accountId,string pass)
+        public bool AuthenticateCustomer(string accountId,string password)
         {
             var customer = dbContext.CustomerAccounts.Find(accountId);
-            return customer.Password == pass;
+            return customer.Password == password;
         }
 
-        public bool AuthenticateStaff(string accountId, string pass)
+        public bool AuthenticateStaff(string accountId, string password)
         {
             var staff = dbContext.StaffAccounts.Find(accountId);
-            return staff.Password == pass;
+            return staff.Password == password;
         }
 
         public string UpdateCustomerName(string accountId,string newName)
@@ -201,7 +211,14 @@ namespace BankApp.Service
                 float fromBalance = fromCustomer.Balance;
                 fromCustomer.Balance = fromBalance - amount;
                 float toBalance = toCustomer.Balance;
-                _ = toCustomer.BankId == fromCustomer.BankId ? toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(toCustomer.BankId).sRTGSCharge): toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(fromCustomer.BankId).oRTGSCharge);
+                if (toCustomer.BankId == fromCustomer.BankId) 
+                {
+                    toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(toCustomer.BankId).sRTGSCharge);
+                }
+                else 
+                {
+                    toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(fromCustomer.BankId).oRTGSCharge); 
+                }
                 GenerateTransactions(fromId,toId,amount,Transaction.TransactionType.Transfer);
                 dbContext.SaveChanges();
                 return true;
@@ -219,13 +236,20 @@ namespace BankApp.Service
                 float fromBalance = fromCustomer.Balance;
                 fromCustomer.Balance = fromBalance - amount;
                 float toBalance = toCustomer.Balance;
-                _ = toCustomer.BankId == fromCustomer.BankId ? toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(toCustomer.BankId).sIMPSCharge) : toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(fromCustomer.BankId).oIMPSCharge);
+                if (toCustomer.BankId == fromCustomer.BankId)
+                {
+                    toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(toCustomer.BankId).sIMPSCharge);
+                }
+                else
+                {
+                    toCustomer.Balance = toBalance + amount - (amount * dbContext.Banks.Find(fromCustomer.BankId).oIMPSCharge);
+                }
                 GenerateTransactions(fromId, toId, amount, Transaction.TransactionType.Transfer);
                 dbContext.SaveChanges();
                 return true;
             }
             return false;
-        } 
+        }
 
         public ConsoleTable GetTransactions(string accountId)
         {
@@ -318,10 +342,7 @@ namespace BankApp.Service
                         dbContext.SaveChanges();
                         return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
+                    return false;
 
                 case (int)Transaction.TransactionType.Transfer:
                     var senderCustomer = dbContext.CustomerAccounts.Find(senderId);
@@ -332,11 +353,7 @@ namespace BankApp.Service
                         dbContext.SaveChanges();
                         return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
-
+                    return false;
             }
             return false;
         } 
